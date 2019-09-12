@@ -10,6 +10,9 @@ Example:
         singletons: ls singleton:true
         external-cmd-test: '!echo'
         sh-c-test: '!sh -c "echo foo bar arg1:$1, arg2:$2" sh-c-test'
+        with-help-text:
+          command: ls -a
+          help: do something or other
 """
 
 from __future__ import division, absolute_import, print_function
