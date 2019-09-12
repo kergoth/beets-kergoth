@@ -7,6 +7,7 @@ __pycache__
 .mypy_cache
 .tox
 .cache
+.coverage
 /pip-wheel-metadata
 /*.egg-info
 
