@@ -61,7 +61,7 @@ class ReplacePlugin(BeetsPlugin):
         return re_compile(pattern).sub(repl, string)
 
     def sub_path(self, path, pattern, repl=''):
-        return util.sanitize_path(path, {re_compile(pattern), repl})
+        return util.sanitize_path(path, [(re_compile(pattern), repl)])
 
 
 # Copied with tweak from beets itself
