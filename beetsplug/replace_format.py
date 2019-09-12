@@ -68,9 +68,6 @@ class ReplacePlugin(BeetsPlugin):
 def get_replacements(config_path):
     replacements = []
     lookup = functools.reduce(lambda x, y: x[y], config_path.split("."), config)
-    if not lookup:
-        raise confuse.ConfigError(u'Failed to look up {0}'.format(config_path))
-
     for pattern, repl in lookup.get(dict).items():
         replacements.append((re_compile(pattern), repl or ''))
     return replacements
