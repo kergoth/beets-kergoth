@@ -26,6 +26,7 @@ from beets import plugins
 from beets import ui
 from beets.plugins import BeetsPlugin
 from beets.ui import Subcommand, print_
+from beets.ui.commands import default_commands
 from beets.util import shlex_split
 
 if sys.version_info >= (3, 3):
@@ -46,44 +47,48 @@ class AliasCommand(Subcommand):
         super(AliasCommand, self).__init__(alias, help=help or command, parser=NoOpOptionParser(add_help_option=False, description=help or command))
 
         self.alias = alias
-        self.command = command
         self.log = log
+        self.command = command
 
-    def run_command(self, args=None):
+    def func(self, lib, opts, args=None):
         if args is None:
             args = []
 
-        if self.command.startswith('!'):
-            command = self.command[1:]
-            argv = shlex_split(command) + args
-        else:
-            # Note that it's not currently viable to directly execute the
-            # Subcommand instance. While we could get the list of subcommands
-            # via plugins.commands() and ui.default_commands, we lack access
-            # to the library object in this context, which is needed to run
-            # the 'func' method.
-            #
-            # TODO: determine if we can get the global arguments and options
-            # from the current cli instance and pass them back into this
-            # external beet call, i.e. -v, -l LIBRARY, etc.
-            argv = ['beet'] + shlex_split(self.command) + args
+        split_command = shlex_split(self.command)
+        command = split_command[0]
+        args = split_command[1:] + args
+        if command.startswith('!'):
+            command = command[1:]
+            argv = [command] + args
 
-        if self.log:
-            self.log.debug('Running {}', subprocess.list2cmdline(argv))
-        try:
-            subprocess.check_call(argv)
-        except subprocess.CalledProcessError as exc:
             if self.log:
-                self.log.debug(u'command `{0}` failed with {1}', subprocess.list2cmdline(argv), exc.returncode)
-            raise
+                self.log.debug('Running {}', subprocess.list2cmdline(argv))
 
-    def func(self, lib, opts, args):
-        try:
-            self.run_command(args)
-        except subprocess.CalledProcessError as exc:
-            plugins.send('cli_exit', lib=lib)
-            lib._close()
-            sys.exit(exc.returncode)
+            try:
+                return subprocess.check_call(argv)
+            except subprocess.CalledProcessError as exc:
+                if self.log:
+                    self.log.debug(u'command `{0}` failed with {1}', subprocess.list2cmdline(argv), exc.returncode)
+                plugins.send('cli_exit', lib=lib)
+                lib._close()
+                sys.exit(exc.returncode)
+        else:
+            argv = [command] + args
+            cmdname = argv[0]
+
+            subcommands = list(default_commands)
+            subcommands.extend(plugins.commands())
+            for subcommand in subcommands:
+                if cmdname == subcommand.name or cmdname in subcommand.aliases:
+                    break
+            else:
+                raise ui.UserError(u"unknown command '{0}'".format(cmdname))
+
+            if self.log:
+                self.log.debug('Running {}', subprocess.list2cmdline(argv))
+
+            suboptions, subargs = subcommand.parse_args(argv[1:])
+            return subcommand.func(lib, suboptions, subargs)
 
 
 class AliasPlugin(BeetsPlugin):
