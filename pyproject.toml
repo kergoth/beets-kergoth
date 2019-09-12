@@ -7,6 +7,11 @@ readme = "README.rst"
 homepage = "https://github.com/kergoth/beets-kergoth"
 repository = "https://github.com/kergoth/beets-kergoth"
 authors = ["Christopher Larson <kergoth@gmail.com>"]
+classifiers = [
+    'Development Status :: 4 - Beta',
+    'Environment :: Plugins',
+    'Topic :: Multimedia :: Sound/Audio',
+]
 packages = [
     { include = "beetsplug" },
 ]
