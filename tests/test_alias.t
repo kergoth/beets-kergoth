@@ -15,6 +15,9 @@
   >     ls-id: ls -f '\$id'
   >     external: '!echo foo'
   >     'false': '!false'
+  >     with-help:
+  >       command: '!echo with help'
+  >       help: get some help
   > END
 
 List aliases
@@ -23,6 +26,7 @@ List aliases
   external: !echo foo
   false: !false
   ls-id: ls -f '$id'
+  with-help: !echo with help
 
 Test internal alias
 
@@ -54,3 +58,15 @@ Test exit code
 
   $ beet false
   [1]
+
+Test command with help text specified
+
+  $ beet help|grep with-help
+    with-help         get some help
+  $ beet help with-help
+  Usage: beet with-help [options]
+
+  get some help
+
+  $ beet with-help
+  with help
