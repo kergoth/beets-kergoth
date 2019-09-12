@@ -1,10 +1,19 @@
 [tool.poetry]
-name = "kergoth-beets"
+name = "beets-kergoth"
 version = "0.1.0"
 description = "Various personal beets plugins that don't yet have a home elsewhere."
+readme = "README.rst"
+homepage = "https://github.com/kergoth/beets-kergoth"
+repository = "https://github.com/kergoth/beets-kergoth"
 authors = ["Christopher Larson <kergoth@gmail.com>"]
 packages = [
     { include = "beetsplug" },
+]
+include = [
+    "tests/*.py",
+    "tests/*.t",
+    "tests/data/**/*",
+    "tox.ini",
 ]
 
 [tool.poetry.dependencies]
