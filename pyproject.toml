@@ -2,6 +2,7 @@
 name = "beets-kergoth"
 version = "0.1.0"
 description = "Various personal beets plugins that don't yet have a home elsewhere."
+license = "Blue Oak Model License 1.0.0"
 readme = "README.rst"
 homepage = "https://github.com/kergoth/beets-kergoth"
 repository = "https://github.com/kergoth/beets-kergoth"
@@ -14,6 +15,7 @@ include = [
     "tests/*.t",
     "tests/data/**/*",
     "tox.ini",
+    "LICENSE.md",
 ]
 
 [tool.poetry.dependencies]
