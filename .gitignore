@@ -1,0 +1,16 @@
+.tool-versions
+.python-version
+
+__pycache__
+*.pyc
+*.pyo
+.mypy_cache
+.tox
+.cache
+/pip-wheel-metadata
+/*.egg-info
+
+# This is a library, don't need to lock down
+poetry.lock
+
+/dist/
