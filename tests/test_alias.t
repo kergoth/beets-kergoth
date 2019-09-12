@@ -61,12 +61,8 @@ Test exit code
 
 Test command with help text specified
 
-  $ beet help|grep with-help
-    with-help         get some help
-  $ beet help with-help
-  Usage: beet with-help [options]
-
-  get some help
-
   $ beet with-help
   with help
+
+  $ beet help|grep with-help
+    with-help         get some help
