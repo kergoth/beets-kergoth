@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "kergoth-beets"
 version = "0.1.0"
-description = ""
+description = "Various personal beets plugins that don't yet have a home elsewhere."
 authors = ["Christopher Larson <kergoth@gmail.com>"]
 packages = [
     { include = "beetsplug" },
