@@ -38,3 +38,19 @@ Confirm that the field was applied to the skipped item
 
   $ beet ls -f '$reimported' id:1
   1
+
+Clear and import as singleton
+
+  $ beet rm -af id:1
+  $ beet import -qsCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3" >/dev/null 2>&1
+  $ beet ls -a
+  $ beet ls
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+
+Reimport with set field
+
+  $ beet ls -f '$reimported' id:1
+  $reimported
+  $ beet import -qsL --set=reimported=1 id:1 >/dev/null
+  $ beet ls -f '$reimported' id:1
+  1
