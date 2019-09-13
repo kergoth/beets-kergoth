@@ -88,8 +88,8 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm):
     changed = []
     for obj in objs:
         # Changes from `modify` command here:
-        obj_mods = dict(mods)
-        for key, value in obj_mods.items():
+        obj_mods = {}
+        for key, value in mods.items():
             value = obj.evaluate_template(value)
             obj_mods[key] = model_cls._parse(key, value)
 
