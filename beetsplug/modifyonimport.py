@@ -21,9 +21,12 @@ class ModifyOnImport(BeetsPlugin):
         })
 
         self.import_stages = [self.imported]
-        self.register_listener('import_begin', self.parse_queries)
+        self.register_listener('import_begin', self.import_begin)
 
-    def parse_queries(self, session):
+    def import_begin(self, session):
+        self.should_write = ui.should_write()
+        self.should_move = ui.should_move()
+
         for name, model_cls in [('album', Album), ('singleton', Item)]:
             modifies = self.get_modifies(self.config['modify_' + name].items(), model_cls)
             setattr(self, name + '_modifies', modifies)
@@ -52,14 +55,12 @@ class ModifyOnImport(BeetsPlugin):
         return dbquery, mods, dels
 
     def imported(self, session, task):
-        # lib = session.lib
         if task.is_album:
             modifies = self.album_modifies
         else:
             modifies = self.singleton_modifies
 
         objs = task.imported_items()
-
         self.modify_objs(session.lib, objs, modifies, task.is_album)
         if task.is_album:
             for albumdbquery, modifies in self.album_item_modifies:
@@ -67,9 +68,6 @@ class ModifyOnImport(BeetsPlugin):
                     self.modify_objs(session.lib, task.album.items(), modifies, False)
 
     def modify_objs(self, lib, objs, modifies, is_album):
-        should_write = ui.should_move(config['import']['write'].get(bool))
-        should_move = ui.should_move(config['import']['move'].get(bool))
-
         for obj in objs:
             all_mods, all_dels = {}, {}
             for dbquery, mods, dels in modifies:
@@ -78,4 +76,4 @@ class ModifyOnImport(BeetsPlugin):
                     all_dels.update(dels)
             if all_mods or all_dels:
                 idquery = dbcore.MatchQuery('id', obj.id)
-                modify_items(lib, all_mods, all_dels, idquery, should_write, should_move, is_album, False)
+                modify_items(lib, all_mods, all_dels, idquery, self.should_write, self.should_move, is_album, False)
