@@ -33,6 +33,8 @@ from __future__ import division, absolute_import, print_function
 import functools
 import re
 
+import confuse
+
 from beets import config, util
 from beets.ui import UserError
 from beets.plugins import BeetsPlugin
@@ -57,10 +59,16 @@ class ReplacePlugin(BeetsPlugin):
         return util.sanitize_path(path, replacements)
 
     def sub(self, string, pattern, repl=''):
-        return re_compile(pattern).sub(repl, string)
+        try:
+            return re.compile(pattern).sub(repl, string)
+        except re.error as exc:
+            raise UserError(u'%sub: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
 
     def sub_path(self, path, pattern, repl=''):
-        return util.sanitize_path(path, [(re_compile(pattern), repl)])
+        try:
+            return util.sanitize_path(path, [(re.compile(pattern), repl)])
+        except re.error as exc:
+            raise UserError(u'%sub_path: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
 
 
 # Copied with tweak from beets itself
@@ -68,16 +76,8 @@ def get_replacements(config_path):
     replacements = []
     lookup = functools.reduce(lambda x, y: x[y], config_path.split("."), config)
     for pattern, repl in lookup.get(dict).items():
-        replacements.append((re_compile(pattern), repl or ''))
+        try:
+            replacements.append((re.compile(pattern), repl or ''))
+        except re.error as exc:
+            raise confuse.ConfigError(u'{0}: error compiling regex `{1}`: {2}'.format(config_path, pattern, str(exc)))
     return replacements
-
-
-def re_compile(pattern):
-    try:
-        return re.compile(pattern)
-    except re.error:
-        raise UserError(
-            u'malformed regular expression in replace: {0}'.format(
-                pattern
-            )
-        )

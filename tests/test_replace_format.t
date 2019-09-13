@@ -47,10 +47,13 @@ Test %sub_path
 Errors
 
   $ beet ls -f '%sub{$title,(invalid,nothing}'
-  <malformed regular expression in replace: (invalid>
+  <%sub: error compiling regex `(invalid`: missing ), unterminated subpattern at position 0>
+
+  $ beet ls -f '%sub_path{$title,(invalid,nothing}'
+  <%sub_path: error compiling regex `(invalid`: missing ), unterminated subpattern at position 0>
 
   $ beet ls -f '%replace{invalid_replace,$title}'
-  <malformed regular expression in replace: (foo>
+  <invalid_replace: error compiling regex `(foo`: missing ), unterminated subpattern at position 0>
 
   $ beet ls -f '%replace{missing_replace,$title}'
   <missing_replace not found>
