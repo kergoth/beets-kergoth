@@ -13,7 +13,7 @@ Set up initial beets configuration
   >   color: no
   > pluginpath:
   >   - $TESTDIR/beetsplug
-  > plugins: mocked_candidate import_inspect
+  > plugins: mockedcandidate importinspect
   > END
 
 Set up library
@@ -64,6 +64,7 @@ Test mocked candidate inspection
   Enter search, enter Id, aBort, iNspect changes?  (no-eol)
 
 
+
 Test inspect + confirmation on apply
 
   $ (echo a; echo y;) | beet import -L -S mocked id:1
@@ -94,4 +95,5 @@ Test inspect + confirmation on apply
     mb_trackid:  -> http://foo
     mb_artistid:  -> 1
     media:  -> Digital Media
+
 

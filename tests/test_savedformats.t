@@ -9,7 +9,7 @@ Set up initial beets configuration
   $ export BEETSDIR="$PWD"
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
-  > plugins: saved_formats
+  > plugins: savedformats
   > album_formats:
   >   album_id: '\$id'
   > item_formats:

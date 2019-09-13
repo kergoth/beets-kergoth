@@ -9,7 +9,7 @@ Set up initial beets configuration
   $ export BEETSDIR="$PWD"
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
-  > plugins: saved_queries
+  > plugins: savedqueries
   > album_queries:
   >   is_blank: "album:'Blank Audio'"
   >   no_total: "albumtotal::^0$"

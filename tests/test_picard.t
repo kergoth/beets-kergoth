@@ -13,7 +13,7 @@
   >   color: no
   > pluginpath:
   >   - $TESTDIR/beetsplug
-  > plugins: alias mocked_candidate picard
+  > plugins: alias mockedcandidate picard
   > alias:
   >   aliases:
   >     picard: '!echo picard me'
@@ -50,4 +50,5 @@ Picard me
    * 250 Milliseconds of Silence (#0) -> A Track (#None) (title)
   Apply, More candidates, Skip, Use as-is, as Tracks, Group albums,
   Enter search, enter Id, aBort, Picard?  (no-eol)
+
 

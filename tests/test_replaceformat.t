@@ -9,7 +9,7 @@ Set up initial beets configuration
   $ export BEETSDIR="$PWD"
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
-  > plugins: replace_format
+  > plugins: replaceformat
   > num_replace:
   >   '250': '500'
   > path_replace:
