@@ -90,8 +90,7 @@ def modify_items(lib, mods, dels, query, write, move, album, confirm):
         # Changes from `modify` command here:
         obj_mods = dict(mods)
         for key, value in obj_mods.items():
-            if isinstance(value, six.string_types):
-                value = obj.evaluate_template(value)
+            value = obj.evaluate_template(value)
             obj_mods[key] = model_cls._parse(key, value)
 
         if print_and_modify(obj, obj_mods, dels) and obj not in changed:
