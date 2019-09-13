@@ -12,8 +12,6 @@
   > ui:
   >   color: no
   > plugins: modifyonimport
-  > import:
-  >   quiet_fallback: skip
   > modifyonimport:
   >   modify_album:
   >     blank: 'albumartist=Foo'
