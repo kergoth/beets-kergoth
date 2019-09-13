@@ -24,7 +24,7 @@ Test mocked candidate inspection
 
   $ (echo n; echo 1; echo b;) | beet import -L -S mocked id:1
   
-  /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data (1 items)
+  /.* \(1 items\) (re)
   Correcting tags from:
       Anar Software LLC - Blank Audio
   To:
@@ -66,7 +66,7 @@ Test inspect + confirmation on apply
 
   $ (echo a; echo y;) | beet import -L -S mocked id:1
   
-  /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data (1 items)
+  /.* \(1 items\) (re)
   Correcting tags from:
       Anar Software LLC - Blank Audio
   To:
