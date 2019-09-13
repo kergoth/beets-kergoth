@@ -15,13 +15,6 @@ classifiers = [
 packages = [
     { include = "beetsplug" },
 ]
-include = [
-    "tests/*.py",
-    "tests/*.t",
-    "tests/data/**/*",
-    "tox.ini",
-    "LICENSE.md",
-]
 
 [tool.poetry.dependencies]
 python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <3.8"
