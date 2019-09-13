@@ -1,4 +1,18 @@
-"""Specify fields from set_fields to also be applied to skipped items on reimport."""
+"""Specify fields from set_fields to also be applied to skipped items on reimport.
+
+This is a bit special-purpose. I have one single use case in mind for this, resuming
+a *reimport*, ex:
+
+    reimportskipfields:
+      set_fields: reimported
+
+    beet import --set=reimported=1 '^reimported:1' mb_albumid::'^$'
+
+This ensures that the field is set regardless of whether the album/item was matched
+or skipped, so both are ignored in subsequent import passes. When I add a new autotag
+plugin to my configuration, I just use modify to wipe the reimported fields and start
+with a new import pass.
+"""
 
 from __future__ import division, absolute_import, print_function
 
