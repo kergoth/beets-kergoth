@@ -2,7 +2,7 @@
 
 from __future__ import division, absolute_import, print_function
 
-from beets import config, dbcore, ui, util
+from beets import dbcore, ui, util
 from beets.library import parse_query_string, Item, Album
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs
