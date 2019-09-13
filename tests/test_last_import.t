@@ -9,8 +9,6 @@ Set up initial beets configuration
   $ export BEETSDIR="$PWD"
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
-  > ui:
-  >   color: no
   > plugins: last_import
   > END
 
