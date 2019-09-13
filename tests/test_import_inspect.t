@@ -23,7 +23,7 @@ Set up library
 Test mocked candidate inspection
 
   $ (echo n; echo 1; echo b;) | beet import -L -S mocked id:1
-
+  
   /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data (1 items)
   Correcting tags from:
       Anar Software LLC - Blank Audio
@@ -61,10 +61,11 @@ Test mocked candidate inspection
   Apply, More candidates, Skip, Use as-is, as Tracks, Group albums,
   Enter search, enter Id, aBort, iNspect changes?  (no-eol)
 
+
 Test inspect + confirmation on apply
 
   $ (echo a; echo y;) | beet import -L -S mocked id:1
-
+  
   /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data (1 items)
   Correcting tags from:
       Anar Software LLC - Blank Audio
@@ -91,3 +92,4 @@ Test inspect + confirmation on apply
     mb_trackid:  -> http://foo
     mb_artistid:  -> 1
     media:  -> Digital Media
+
