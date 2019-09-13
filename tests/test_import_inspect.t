@@ -11,6 +11,8 @@ Set up initial beets configuration
   > directory: .
   > ui:
   >   color: no
+  > pluginpath:
+  >   - $TESTDIR/beetsplug
   > plugins: mocked_candidate import_inspect
   > END
 
