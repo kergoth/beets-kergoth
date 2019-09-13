@@ -73,4 +73,5 @@ class LastimportPlugin(BeetsPlugin):
             item = task.item
 
         item['last_import'] = 1
-        item.store('last_import')
+        with session.lib.transaction():
+            item.store('last_import')
