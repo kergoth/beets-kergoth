@@ -16,8 +16,6 @@
 
 from __future__ import division, absolute_import, print_function
 
-import six
-
 from beets import library, ui
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs, print_
