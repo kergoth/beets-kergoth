@@ -52,17 +52,17 @@ class LastimportPlugin(BeetsPlugin):
                 fmt = u'$added ' + config['format_item'].get()
 
         query = lib.albums if album else lib.items
-        for obj in query('last_import:1 added+'):
+        for obj in query(u'last_import:1 added+'):
             print_(format(obj, fmt))
 
     def clear_last_import(self, session):
         """Clear existing last_import fields before the new import."""
         with session.lib.transaction():
-            for album in session.lib.albums('last_import:1'):
+            for album in session.lib.albums(u'last_import:1'):
                 album['last_import'] = 0
                 album.store('last_import')
 
-            for item in session.lib.items('last_import:1'):
+            for item in session.lib.items(u'last_import:1'):
                 item['last_import'] = 0
                 item.store('last_import')
 
