@@ -46,11 +46,9 @@ Reset library
 
 Test singleton
 
-  $ beet import -qsCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
+  $ beet import -qsCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3" | grep '\->' | sort
   .*/data/250-milliseconds-of-silence.mp3 (re)
-  Modifying 1 items.
-  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
-    artist_sort:  -> Bar
     artist_credit:  -> Bar
+    artist_sort:  -> Bar
   $ beet ls -f '$artist $artist_sort $artist_credit'
   Anar Software LLC Bar Bar
