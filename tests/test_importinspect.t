@@ -37,21 +37,21 @@ Test mocked candidate inspection
    * 250 Milliseconds of Silence (#0) -> A Track (#None) (title)
   Apply, More candidates, Skip, Use as-is, as Tracks, Group albums,
   Enter search, enter Id, aBort, iNspect changes? # selection (default 1)? Anar Software LLC - Blank Audio
-    albumartist: Anar Software LLC -> An Artist
     album: Blank Audio -> An Album
-    year: 0000 -> 2019
-    month: 00 -> 01
-    day: 00 -> 01
-    mb_albumid:  -> mocked
-    mb_albumartistid:  -> http://foo
+    albumartist: Anar Software LLC -> An Artist
     country:  -> XW
+    day: 00 -> 01
+    mb_albumartistid:  -> http://foo
+    mb_albumid:  -> mocked
+    month: 00 -> 01
+    year: 0000 -> 2019
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
-    title: 250 Milliseconds of Silence -> A Track
     artist: Anar Software LLC -> An Artist
-    tracktotal: 00 -> 01
-    mb_trackid:  -> http://foo
     mb_artistid:  -> 1
+    mb_trackid:  -> http://foo
     media:  -> Digital Media
+    title: 250 Milliseconds of Silence -> A Track
+    tracktotal: 00 -> 01
   Correcting tags from:
       Anar Software LLC - Blank Audio
   To:
@@ -80,20 +80,20 @@ Test inspect + confirmation on apply
    * 250 Milliseconds of Silence (#0) -> A Track (#None) (title)
   Apply, More candidates, Skip, Use as-is, as Tracks, Group albums,
   Enter search, enter Id, aBort, iNspect changes? Anar Software LLC - Blank Audio
-    albumartist: Anar Software LLC -> An Artist
     album: Blank Audio -> An Album
-    year: 0000 -> 2019
-    month: 00 -> 01
-    day: 00 -> 01
-    mb_albumid:  -> mocked
-    mb_albumartistid:  -> http://foo
+    albumartist: Anar Software LLC -> An Artist
     country:  -> XW
+    day: 00 -> 01
+    mb_albumartistid:  -> http://foo
+    mb_albumid:  -> mocked
+    month: 00 -> 01
+    year: 0000 -> 2019
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
-    title: 250 Milliseconds of Silence -> A Track
     artist: Anar Software LLC -> An Artist
-    tracktotal: 00 -> 01
-    mb_trackid:  -> http://foo
     mb_artistid:  -> 1
+    mb_trackid:  -> http://foo
     media:  -> Digital Media
+    title: 250 Milliseconds of Silence -> A Track
+    tracktotal: 00 -> 01
 
 

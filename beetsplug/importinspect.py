@@ -101,7 +101,7 @@ class ImportInspectPlugin(BeetsPlugin):
             album = library.Album(lib, **values)
             compare_fields = self.get_fields(self.album_fields, oldvalues)
 
-            album_changes = ui.show_model_changes(album, oldalbum, compare_fields)
+            album_changes = show_model_changes(album, oldalbum, compare_fields)
             if album_changes:
                 changes = True
 
@@ -109,20 +109,20 @@ class ImportInspectPlugin(BeetsPlugin):
             for item, track_info in match.mapping.items():
                 newitem = new_by_info[track_info]
                 compare_fields = self.get_fields(self.nonalbum_fields, item)
-                item_changes = ui.show_model_changes(newitem, item, compare_fields)
+                item_changes = show_model_changes(newitem, item, compare_fields)
                 if item_changes:
                     changes = True
         else:
             fakeitem = new_item(task.item)
             autotag.apply_item_metadata(fakeitem, match.info)
             compare_fields = self.get_fields(self.all_fields, task.item)
-            changes = ui.show_model_changes(fakeitem, task.item, compare_fields)
+            changes = show_model_changes(fakeitem, task.item, compare_fields)
 
         return changes
 
     def get_fields(self, keys, old):
         compare_fields = []
-        for key in keys:
+        for key in sorted(keys):
             if old.get(key):
                 ignored = self.ignored_existing
             else:
@@ -130,3 +130,46 @@ class ImportInspectPlugin(BeetsPlugin):
             if key not in ignored:
                 compare_fields.append(key)
         return compare_fields
+
+
+def show_model_changes(new, old=None, fields=None, always=False):
+    """Given a Model object, print a list of changes from its pristine
+    version stored in the database. Return a boolean indicating whether
+    any changes were found.
+
+    `old` may be the "original" object to avoid using the pristine
+    version from the database. `fields` may be a list of fields to
+    restrict the detection to. `always` indicates whether the object is
+    always identified, regardless of whether any changes are present.
+    """
+    old = old or new._db._get(type(new), new.id)
+
+    # Build up lines showing changed fields.
+    changes = []
+    for field in sorted(old):
+        # Subset of the fields. Never show mtime.
+        if field == 'mtime' or (fields and field not in fields):
+            continue
+
+        # Detect and show difference for this field.
+        line = ui._field_diff(field, old, new)
+        if line:
+            changes.append(u'  {0}: {1}'.format(field, line))
+
+    # New fields.
+    for field in sorted(set(new) - set(old)):
+        if fields and field not in fields:
+            continue
+
+        changes.append(u'  {0}: {1}'.format(
+            field,
+            ui.colorize('text_highlight', new.formatted()[field])
+        ))
+
+    # Print changes.
+    if changes or always:
+        ui.print_(format(old))
+    if changes:
+        ui.print_(u'\n'.join(changes))
+
+    return bool(changes)
