@@ -29,12 +29,12 @@ Test referencing other fields
 
 Test use of a format function
 
-  $ beet modify -yaW id:1 album='The Test'
+  $ beet modify -yaW id:1 albumartist='The Test'
   Modifying 1 albums.
   Anar Software LLC - Blank Audio
-    album: Blank Audio -> The Test
+    albumartist: Anar Software LLC -> The Test
 
-  $ beet modifytmpl -yaW id:1 album_sort='%the{$album}'
+  $ beet modifytmpl -yaW id:1 albumartist_sort='%the{$albumartist}'
   Modifying 1 albums.
-  Anar Software LLC - The Test
-    album_sort: Test, The
+  The Test - Blank Audio
+    albumartist_sort:  -> Test, The
