@@ -28,7 +28,7 @@
 Test album and album_items
 
   $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
-  /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data/250-milliseconds-of-silence.mp3
+  .*/data/250-milliseconds-of-silence.mp3 (re)
   Modifying 1 albums.
   Anar Software LLC - Blank Audio
     albumartist: Anar Software LLC -> Foo
@@ -47,7 +47,7 @@ Reset library
 Test singleton
 
   $ beet import -qsCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
-  /Users/kergoth/Repos/github.com/kergoth/beets-kergoth/tests/data/250-milliseconds-of-silence.mp3
+  .*/data/250-milliseconds-of-silence.mp3 (re)
   Modifying 1 items.
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     artist_sort:  -> Bar
