@@ -14,6 +14,7 @@
   > plugins: modifyonimport
   > modifyonimport:
   >   modify_album:
+  >     '': flexfield=1
   >     blank: 'albumartist=Foo'
   >   modify_album_items:
   >     blank:
@@ -32,11 +33,12 @@ Test album and album_items
   Modifying 1 albums.
   Anar Software LLC - Blank Audio
     albumartist: Anar Software LLC -> Foo
+    flexfield: 1
   Modifying 1 items.
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     artist: Anar Software LLC -> Modified
-  $ beet ls -a
-  Foo - Blank Audio
+  $ beet ls -a -f '$albumartist - $album - $flexfield'
+  Foo - Blank Audio - 1
   $ beet ls
   Modified - Blank Audio - 250 Milliseconds of Silence
 
