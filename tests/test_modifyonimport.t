@@ -42,7 +42,7 @@ Test album and album_items
 
 Reset library
 
-  $ beet rm -fa id:1
+  $ rm library.db
 
 Test singleton
 
