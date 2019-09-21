@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "beets-kergoth"
-version = "0.3.1"
+version = "0.3.2"
 description = "Various personal beets plugins that don't yet have a home elsewhere."
 license = "Blue Oak Model License 1.0.0"
 readme = "README.rst"
