@@ -5,7 +5,7 @@ By default, also checks $PATH for beet-* and makes those available as well.
 Example:
 
     alias:
-      from_path: True # Default
+      from_path: yes # Default
       aliases:
         singletons: ls singleton:true
         external-cmd-test: '!echo'
