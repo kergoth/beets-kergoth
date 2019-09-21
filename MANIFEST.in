@@ -1,4 +1,6 @@
 graft tests
+graft docs
+graft images
 global-exclude *.py[cod]
 global-exclude __pycache__
 tox.ini
