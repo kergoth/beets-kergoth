@@ -33,9 +33,13 @@ class ReimportSkippedFieldsPlugin(BeetsPlugin):
         self.register_listener('import_task_choice', self.import_task_choice)
 
     def import_task_choice(self, session, task):
-        reimporting = config['import']['library'].get()
-        if reimporting and task.skip:
-            self.mark_items(session, task, task.items)
+        try:
+            reimporting = config['import']['library'].get()
+        except Exception:
+            pass
+        else:
+            if reimporting and task.skip:
+                self.mark_items(session, task, task.items)
 
     def mark_items(self, session, task, items):
         fields = self.fields()
