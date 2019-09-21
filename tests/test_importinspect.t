@@ -1,12 +1,10 @@
 Verify that beets works
 
-  $ beet version >/dev/null
-  $ echo $?
-  0
-
 Set up initial beets configuration
 
   $ export BEETSDIR="$PWD"
+  $ beet version >/dev/null
+
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
   > ui:
@@ -65,6 +63,7 @@ Test mocked candidate inspection
 
 
 
+
 Test inspect + confirmation on apply
 
   $ (echo a; echo y;) | beet import -L -S mocked id:1
@@ -95,5 +94,6 @@ Test inspect + confirmation on apply
     media:  -> Digital Media
     title: 250 Milliseconds of Silence -> A Track
     tracktotal: 00 -> 01
+
 
 

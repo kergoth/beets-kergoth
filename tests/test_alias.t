@@ -1,16 +1,15 @@
 # Verify that beets works
 
-  $ beet version >/dev/null
-  $ echo $?
-  0
-
 # Set up initial beets configuration
 
   $ export BEETSDIR="$PWD"
+  $ beet version >/dev/null
+
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
   > plugins: alias
   > alias:
+  >   from_path: no
   >   aliases:
   >     ls-id: ls -f '\$id'
   >     external: '!echo foo'
@@ -43,17 +42,6 @@ Test external alias
   $ beet external -v bar
   foo -v bar
 
-Test alias from path
-
-  $ mkdir bin
-  $ cat >bin/beet-test-from-path <<END
-  > #!/bin/sh
-  > echo testing from path "\$@"
-  > END
-  $ chmod +x bin/beet-test-from-path
-  $ PATH="$PWD/bin:$PATH" beet test-from-path foobar
-  testing from path foobar
-
 Test exit code
 
   $ beet false
@@ -65,4 +53,19 @@ Test command with help text specified
   with help
 
   $ beet help|grep with-help
-    with-help         get some help
+    with-help  *get some help (re)
+
+Test alias from path
+
+  $ mkdir bin
+  $ cat >bin/beet-test-from-path <<END
+  > #!/bin/sh
+  > echo testing from path "\$@"
+  > END
+  $ chmod +x bin/beet-test-from-path
+  $ cat >>config.yaml <<END
+  > alias:
+  >   from_path: yes
+  > END
+  $ PATH="$PWD/bin:$PATH" beet test-from-path foobar
+  testing from path foobar

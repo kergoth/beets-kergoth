@@ -1,12 +1,10 @@
 Verify that beets works
 
-  $ beet version >/dev/null
-  $ echo $?
-  0
-
 Set up initial beets configuration
 
   $ export BEETSDIR="$PWD"
+  $ beet version >/dev/null
+
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
   > plugins: musicsource
