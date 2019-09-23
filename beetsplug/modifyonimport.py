@@ -28,20 +28,24 @@ class ModifyOnImport(BeetsPlugin):
         self.should_move = ui.should_move()
 
         for name, model_cls in [('album', Album), ('singleton', Item)]:
-            modifies = self.get_modifies(self.config['modify_' + name].items(), model_cls)
+            modifies = self.get_modifies(self.config['modify_' + name].items(), model_cls, 'modify_' + name)
             setattr(self, name + '_modifies', modifies)
 
         self.album_item_modifies = []
         for albumquery, itemmodifies in self.config['modify_album_items'].items():
             albumdbquery, _ = parse_query_string(util.as_string(albumquery), Album)
-            modifies = self.get_modifies(itemmodifies.items(), Item)
+            modifies = self.get_modifies(itemmodifies.items(), Item, 'modify_album_items.{0}'.format(albumquery))
             self.album_item_modifies.append((albumdbquery, modifies))
 
-    def get_modifies(self, items, model_cls):
+    def get_modifies(self, items, model_cls, context):
         modifies = []
         for query, modify in items:
             modify = modify.as_str()
-            _, mods, dels = self.parse_modify(modify, model_cls)
+            mod_query, mods, dels = self.parse_modify(modify, model_cls)
+            if mod_query:
+                raise ui.UserError('modifyonimport.{0}[{1!r}]: unexpected query `{2}` in value'.format(context, query, mod_query))
+            elif not mods and not dels:
+                raise ui.UserError('modifyonimport.{0}[{1!r}]: no modifications found'.format(context, query))
             dbquery, _ = parse_query_string(util.as_string(query), model_cls)
             modifies.append((dbquery, mods, dels))
         return modifies
@@ -50,9 +54,7 @@ class ModifyOnImport(BeetsPlugin):
         modify = util.as_string(modify)
         args = shlex_split(modify)
         query, mods, dels = modify_parse_args(decargs(args))
-        query = util.as_string(' '.join(query))
-        dbquery, _ = parse_query_string(query, model_cls)
-        return dbquery, mods, dels
+        return ' '.join(query), mods, dels
 
     def imported(self, session, task):
         objs = task.imported_items()

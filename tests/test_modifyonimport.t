@@ -5,6 +5,36 @@
   $ export BEETSDIR="$PWD"
   $ beet version >/dev/null
 
+# Test config error handling
+
+  $ cat >"$PWD/config.yaml" <<END
+  > directory: .
+  > ui:
+  >   color: no
+  > plugins: modifyonimport
+  > modifyonimport:
+  >   modify_album:
+  >     '': 'wrong_query:foo'
+  > END
+  $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
+  error: modifyonimport.modify_album['']: unexpected query `wrong_query:foo` in value
+  [1]
+  $ rm -f library.db
+
+  $ cat >"$PWD/config.yaml" <<END
+  > directory: .
+  > ui:
+  >   color: no
+  > plugins: modifyonimport
+  > modifyonimport:
+  >   modify_album:
+  >     foo: ''
+  > END
+  $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
+  error: modifyonimport.modify_album['foo']: no modifications found
+  [1]
+  $ rm -f library.db
+
   $ cat >"$PWD/config.yaml" <<END
   > directory: .
   > ui:
