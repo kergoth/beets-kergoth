@@ -61,6 +61,9 @@ cleaning up, but others are useful pretty rarely.
   with a flexible field.
 - The ``modifytmpl`` plugin lets you define fields using templates / format
   strings. This will be going upstream into the main ``modify`` command.
+- The ``nowrite`` plugin blocks writes/moves of items in the library, which is
+  particularly useful in testing beets or testing changes to beets without
+  mucking up your existing library.
 - The ``otherqueries`` plugin defines other random queries of questionable
   usefulness at this time.
 - The ``spotifyexplicit`` plugin uses the ``spotify`` plugin to look up items
