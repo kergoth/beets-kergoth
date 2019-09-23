@@ -18,12 +18,10 @@
   $ "$TESTDIR"/scripts/set-itunesadvisory test.mp3 1
   $ beet import -qcWA test.mp3
   .*/test.mp3 (re)
-  $ beet ls -p
-  (.*)/test_advisory(.*)/(.*)/00 250 Milliseconds of Silence.mp3 (re)
-  $ beet ls -f '$advisory'
-  1
-  $ beet ls -a -f '$albumadvisory'
-  1
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 1
+  Anar Software LLC - Blank Audio
+    albumadvisory: 1
 
 # Test clean
 
@@ -31,7 +29,5 @@
   $ "$TESTDIR"/scripts/set-itunesadvisory test2.mp3 2
   $ beet import -qcWA test2.mp3
   .*/test2.mp3 (re)
-  $ beet ls -f '$advisory' id:2
-  2
-  $ beet ls -a -f '$albumadvisory' id:2
-  $albumadvisory
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 2

@@ -9,8 +9,9 @@ from __future__ import division, absolute_import, print_function
 
 import mediafile
 
-from beets.plugins import BeetsPlugin
 from beets.dbcore import types
+from beets.plugins import BeetsPlugin
+from beets.ui.commands import print_and_modify
 
 
 class iTunesAdvisoryPlugin(BeetsPlugin):
@@ -46,14 +47,13 @@ class iTunesAdvisoryPlugin(BeetsPlugin):
             if advisory:
                 if advisory == 1:
                     explicit = True
-                item.advisory = advisory
-                self._log.debug('{0}: advisory={1}'.format(item.path, advisory))
-                changed.add(item)
+                if print_and_modify(item, {'advisory': advisory}, []):
+                    changed.add(item)
 
         if task.is_album and explicit:
             task.album.albumadvisory = 1
-            self._log.debug('{0}: albumadvisory=1'.format(task.album.path))
-            changed.add(task.album)
+            if print_and_modify(task.album, {'albumadvisory': 1}, []):
+                changed.add(task.album)
 
         with session.lib.transaction():
             for obj in changed:
