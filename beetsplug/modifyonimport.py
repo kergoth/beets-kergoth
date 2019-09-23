@@ -2,11 +2,11 @@
 
 from __future__ import division, absolute_import, print_function
 
-from beets import dbcore, ui, util
+from beets import ui, util
 from beets.library import parse_query_string, Item, Album
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs
-from beets.ui.commands import modify_parse_args, modify_items
+from beets.ui.commands import modify_parse_args, print_and_modify
 from beets.util import shlex_split
 
 
@@ -65,15 +65,27 @@ class ModifyOnImport(BeetsPlugin):
         if task.is_album:
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
-                    self.modify_objs(session.lib, task.album.items(), modifies, False)
+                    self.modify_objs(session.lib, task.album.items(), modifies, is_album=False)
 
     def modify_objs(self, lib, objs, modifies, is_album):
+        model_cls = Album if is_album else Item
+        changed = []
         for obj in objs:
             all_mods, all_dels = {}, {}
             for dbquery, mods, dels in modifies:
                 if dbquery.match(obj):
                     all_mods.update(mods)
                     all_dels.update(dels)
+
             if all_mods or all_dels:
-                idquery = dbcore.MatchQuery('id', obj.id)
-                modify_items(lib, all_mods, all_dels, idquery, self.should_write, self.should_move, is_album, False)
+                obj_mods = {}
+                for key, value in all_mods.items():
+                    value = obj.evaluate_template(value)
+                    obj_mods[key] = model_cls._parse(key, value)
+
+                if print_and_modify(obj, obj_mods, all_dels) and obj not in changed:
+                    changed.append(obj)
+
+        with lib.transaction():
+            for obj in changed:
+                obj.try_sync(self.should_write, self.should_move)
