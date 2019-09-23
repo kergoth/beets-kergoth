@@ -55,17 +55,19 @@ class ModifyOnImport(BeetsPlugin):
         return dbquery, mods, dels
 
     def imported(self, session, task):
-        if task.is_album:
-            modifies = self.album_modifies
-        else:
-            modifies = self.singleton_modifies
-
         objs = task.imported_items()
-        self.modify_objs(session.lib, objs, modifies, task.is_album)
         if task.is_album:
+            self.modify_objs(session.lib, [task.album], self.album_modifies, task.is_album)
+
+            # Changing the album also changes the items
+            for obj in objs:
+                obj.load()
+
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
-                    self.modify_objs(session.lib, task.album.items(), modifies, is_album=False)
+                    self.modify_objs(session.lib, objs, modifies, is_album=False)
+        else:
+            self.modify_objs(session.lib, objs, self.singleton_modifies, is_album=False)
 
     def modify_objs(self, lib, objs, modifies, is_album):
         model_cls = Album if is_album else Item
@@ -88,4 +90,4 @@ class ModifyOnImport(BeetsPlugin):
 
         with lib.transaction():
             for obj in changed:
-                obj.try_sync(self.should_write, self.should_move)
+                obj.store()
