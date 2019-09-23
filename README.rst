@@ -52,6 +52,8 @@ cleaning up, but others are useful pretty rarely.
   only against non-MusicBrainz tracks, and stores the low level values rather
   than submitting them. I've used this to populate the acoustic fingerprint
   tags for use by external de-duplication scripts.
+- The ``advisory`` plugin sets ``advisory`` and ``albumadvisory`` flexible
+  fields, on import, based on the ``itunesadvisory`` tag in the files.
 - The ``existingqueries`` plugin adds a couple queries that originated in the
   beets source.
 - The ``hasart`` plugin adds a query to check for embedded album art.
