@@ -16,6 +16,6 @@ project = u'beets-kergoth'
 copyright = u'2019, Christopher Larson'
 
 version = '0.3'
-release = '0.3.2'
+release = '0.3.3b'
 
 pygments_style = 'sphinx'
