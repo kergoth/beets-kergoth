@@ -80,3 +80,17 @@ Test singleton
     artist_sort:  -> Bar
   $ beet ls -f '$artist $artist_sort $artist_credit'
   Anar Software LLC Bar Bar
+
+Test file move based on modified metadata
+
+  $ rm -f library.db; cat >"$PWD/config.yaml" <<END
+  > directory: .
+  > plugins: modifyonimport
+  > modifyonimport:
+  >   modify_singleton:
+  >     silence: title=Blah
+  > END
+  $ beet import -qscwA "$TESTDIR/data/250-milliseconds-of-silence.mp3" >/dev/null
+  .*/data/250-milliseconds-of-silence.mp3 (re)
+  $ beet ls -p
+  .*/Blah.mp3 (re)
