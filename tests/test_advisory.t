@@ -19,7 +19,7 @@
   $ beet import -qcWA test.mp3
   .*/test.mp3 (re)
   $ beet ls -p
-  (.*)/test_advisory.t/(.*)/00 250 Milliseconds of Silence.mp3 (re)
+  (.*)/test_advisory(.*)/(.*)/00 250 Milliseconds of Silence.mp3 (re)
   $ beet ls -f '$advisory'
   1
   $ beet ls -a -f '$albumadvisory'
