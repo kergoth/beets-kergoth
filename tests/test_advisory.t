@@ -31,3 +31,21 @@
   .*/test2.mp3 (re)
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     advisory: 2
+
+# Test write
+
+  $ rm library.db
+  $ rm -f Anar*/**/*.mp3
+  $ beet import -qcWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
+  .*/250-milliseconds-of-silence.mp3 (re)
+  $ beet ls -p
+  .*/test_advisory.*/.* (re)
+  $ beet modify -y id:1 advisory=1
+  Modifying 1 items.
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 1
+  $ beet write-advisory
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 0 -> 1
+  $ "$TESTDIR"/scripts/get-itunesadvisory Anar*/**/*.mp3
+  1

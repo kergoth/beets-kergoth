@@ -5,12 +5,13 @@ advises against leveraging it, so set flexible fields on import and rely on
 those fields independent of the tags.
 """
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import mediafile
-
 from beets.dbcore import types
+from beets.library import Item
 from beets.plugins import BeetsPlugin
+from beets.ui import Subcommand, show_model_changes
 from beets.ui.commands import print_and_modify
 
 
@@ -58,3 +59,31 @@ class iTunesAdvisoryPlugin(BeetsPlugin):
         with session.lib.transaction():
             for obj in changed:
                 obj.store()
+
+    def commands(self):
+        """Add the write-advisory command."""
+        write_advisory = Subcommand('write-advisory',
+                                    help=u'write the advisory state to tags')
+        write_advisory.parser.add_option(
+            u'-p', u'--pretend', action='store_true',
+            help=u"show all changes but do nothing"
+        )
+        write_advisory.func = self.write_advisory
+        return [write_advisory]
+
+    def write_advisory(self, lib, opts, args):
+        for item in lib.items(u'advisory:1..'):
+            mf = mediafile.MediaFile(item.path)
+            if item.advisory != mf.itunesadvisory:
+                fakeitem = new_item(item)
+                fakeitem.advisory = mf.itunesadvisory
+                show_model_changes(item, fakeitem)
+                if not opts.pretend:
+                    mf.itunesadvisory = item.advisory
+                    mf.save()
+
+
+def new_item(item):
+    newitem = Item()
+    newitem.update(item)
+    return newitem
