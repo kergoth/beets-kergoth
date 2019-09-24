@@ -62,6 +62,11 @@ class ModifyOnImport(BeetsPlugin):
     def imported(self, session, task):
         objs = task.imported_items()
         if task.is_album:
+            self.modify_objs(session.lib, [task.album], self.album_modifies, task.is_album)
+            # Album modifications can alter the items
+            for obj in objs:
+                obj.load()
+
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
                     changed_items = self.modify_objs(session.lib, objs, modifies, is_album=False)
@@ -70,12 +75,11 @@ class ModifyOnImport(BeetsPlugin):
                         new_singletons = [obj for obj in changed_items if not obj.album_id]
                         if new_singletons:
                             self.modify_objs(session.lib, new_singletons, self.singleton_modifies, is_album=False)
-
-            self.modify_objs(session.lib, [task.album], self.album_modifies, task.is_album)
         else:
             self.modify_objs(session.lib, objs, self.singleton_modifies, is_album=False)
 
     def import_completed(self, lib, paths):
+        # Handle albums which are now empty due to conversions to singleton
         query = dbcore.OrQuery([dbcore.MatchQuery('id', id) for id in self.changed_album_items])
         for album in lib.albums(query):
             if not album.items():

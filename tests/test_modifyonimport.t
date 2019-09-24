@@ -58,11 +58,11 @@ Test album and album_items
 
   $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
   .*/data/250-milliseconds-of-silence.mp3 (re)
-  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
-    artist: Anar Software LLC -> Modified
   Anar Software LLC - Blank Audio
     albumartist: Anar Software LLC -> Foo
     flexfield: 1
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    artist: Anar Software LLC -> Modified
   $ beet ls -a -f '$albumartist - $album - $flexfield'
   Foo - Blank Audio - 1
   $ beet ls
