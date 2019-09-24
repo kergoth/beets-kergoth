@@ -15,21 +15,21 @@ class ConvertSingletonsPlugin(BeetsPlugin):
         self.to_convert = set()
 
     def import_album(self, lib, album):
-        for item in album.items():
-            if not item.album or item.album == '[non-album tracks]':
-                self.to_convert.add(item)
+        if not album.album or album.album == '[non-album tracks]':
+            self.to_convert |= set(album.items())
 
     def import_end(self, lib, paths):
-        albums = set()
+        albums = {}
         with lib.transaction():
             for item in self.to_convert:
-                albums.add(item.get_album())
+                if item.album_id not in albums:
+                    albums[item.album_id] = item.get_album()
                 self._log.info('converted {0} to a singleton'.format(item))
                 item.album_id = None
                 item.store()
 
         with lib.transaction():
-            for album in albums:
+            for album in albums.values():
                 if not album.items():
                     self._log.info('removed remnant empty album {0} due to conversions to singleton'.format(album.id))
                     album.remove(with_items=False)
