@@ -68,6 +68,10 @@ class ModifyOnImport(BeetsPlugin):
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
                     self.modify_objs(session.lib, objs, modifies, is_album=False)
+
+            if not task.album.items():
+                self._log.warning('No items remaining for album {0}, removing'.format(task.album))
+                task.album.remove(with_items=False)
         else:
             self.modify_objs(session.lib, objs, self.singleton_modifies, is_album=False)
 
