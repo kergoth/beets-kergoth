@@ -49,3 +49,30 @@
     advisory: 0 -> 1
   $ "$TESTDIR"/scripts/get-itunesadvisory Anar*/**/*.mp3
   1
+
+# Test noauto
+
+  $ rm library.db; cat >"$PWD/config.yaml" <<END
+  > directory: .
+  > ui:
+  >   color: no
+  > plugins: advisory
+  > advisory:
+  >   auto: no
+  > END
+  $ beet import -qcWA test.mp3
+  .*/test.mp3 (re)
+  $ beet ls advisory:1
+  $ beet read-advisory -p id:1
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 1
+  Anar Software LLC - Blank Audio
+    albumadvisory: 1
+  $ beet ls advisory:1
+  $ beet read-advisory id:1
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    advisory: 1
+  Anar Software LLC - Blank Audio
+    albumadvisory: 1
+  $ beet ls -f '$advisory'
+  1
