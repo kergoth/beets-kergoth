@@ -1,9 +1,9 @@
 """Apply modifications on album/item import."""
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
-from beets import dbcore, ui, util
-from beets.library import parse_query_string, Item, Album
+from beets import ui, util
+from beets.library import Album, Item, parse_query_string
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs
 from beets.ui.commands import modify_parse_args, print_and_modify
@@ -22,7 +22,6 @@ class ModifyOnImport(BeetsPlugin):
 
         self.import_stages = [self.imported]
         self.register_listener('import_begin', self.import_begin)
-        self.register_listener('import', self.import_completed)
 
     def import_begin(self, session):
         self.should_write = ui.should_write()
@@ -37,8 +36,6 @@ class ModifyOnImport(BeetsPlugin):
             albumdbquery, _ = parse_query_string(util.as_string(albumquery), Album)
             modifies = self.get_modifies(itemmodifies.items(), Item, 'modify_album_items.{0}'.format(albumquery))
             self.album_item_modifies.append((albumdbquery, modifies))
-
-        self.changed_album_items = set()
 
     def get_modifies(self, items, model_cls, context):
         modifies = []
@@ -69,22 +66,9 @@ class ModifyOnImport(BeetsPlugin):
 
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
-                    changed_items = self.modify_objs(session.lib, objs, modifies, is_album=False)
-                    if changed_items:
-                        self.changed_album_items.add(task.album.id)
-                        new_singletons = [obj for obj in changed_items if not obj.album_id]
-                        if new_singletons:
-                            self.modify_objs(session.lib, new_singletons, self.singleton_modifies, is_album=False)
+                    self.modify_objs(session.lib, objs, modifies, is_album=False)
         else:
             self.modify_objs(session.lib, objs, self.singleton_modifies, is_album=False)
-
-    def import_completed(self, lib, paths):
-        # Handle albums which are now empty due to conversions to singleton
-        query = dbcore.OrQuery([dbcore.MatchQuery('id', id) for id in self.changed_album_items])
-        for album in lib.albums(query):
-            if not album.items():
-                self._log.warning('No items remaining for album {0}, removing'.format(album.id))
-                album.remove(with_items=False)
 
     def modify_objs(self, lib, objs, modifies, is_album):
         model_cls = Album if is_album else Item
