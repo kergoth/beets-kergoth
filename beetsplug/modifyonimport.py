@@ -64,8 +64,12 @@ class ModifyOnImport(BeetsPlugin):
         if task.is_album:
             for albumdbquery, modifies in self.album_item_modifies:
                 if albumdbquery.match(task.album):
-                    if self.modify_objs(session.lib, objs, modifies, is_album=False):
+                    changed_items = self.modify_objs(session.lib, objs, modifies, is_album=False)
+                    if changed_items:
                         self.changed_album_items.add(task.album.id)
+                        new_singletons = [obj for obj in changed_items if not obj.album_id]
+                        if new_singletons:
+                            self.modify_objs(session.lib, new_singletons, self.singleton_modifies, is_album=False)
 
             self.modify_objs(session.lib, [task.album], self.album_modifies, task.is_album)
         else:

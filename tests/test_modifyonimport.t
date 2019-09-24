@@ -108,6 +108,8 @@ Test singleton conversion
   >     # These should be singletons
   >     'album:"non-album tracks"':
   >       '': 'album_id= album='
+  >   modify_singleton:
+  >     '': new=1
   > END
 
 Import to adjust so it'll be converted to singleton next import
@@ -126,6 +128,8 @@ Import expecting conversion to singleton
   Anar Software LLC - [non-album tracks] - 250 Milliseconds of Silence
     album_id: 1 -> 
     album: [non-album tracks] -> 
+  Anar Software LLC -  - 250 Milliseconds of Silence
+    new: 1
   $ beet ls -a
   $ beet ls
   Anar Software LLC -  - 250 Milliseconds of Silence
