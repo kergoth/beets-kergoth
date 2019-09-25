@@ -1,13 +1,11 @@
 """Support saved, named queries."""
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from beets import config
-from beets.library import parse_query_string, Item, Album
+from beets.dbcore import Query, types
+from beets.library import Album, Item, parse_query_string
 from beets.plugins import BeetsPlugin
-
-from beets.dbcore import types
-from beets.dbcore import Query
 
 
 class SavedQuery(Query):
