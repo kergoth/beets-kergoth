@@ -51,3 +51,9 @@ Test error when modifying item fields on an album
   $ beet modifytmpl -yaW id:1 track=1
   error: modification of non-album field `track` should be done on the item, not the album
   [1]
+
+Test error when modifying computed fields
+
+  $ beet modifytmpl -yW id:1 samplerate=100
+  error: modification of computed field `samplerate` is not supported
+  [1]

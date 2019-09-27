@@ -31,6 +31,13 @@ class ModifyTmplPlugin(BeetsPlugin):
     def event_pluginload(self):
         self.non_album_fields = set(library.Item._media_fields) - set(library.Album.item_keys)
 
+        getters = library.Item._getters()
+        getters.update(library.Album._getters())
+        getter_fields = list(getters.keys())
+        getter_fields.remove('path')
+        media_fields = (library.Item._media_fields - library.Item._media_tag_fields)
+        self.computed_fields = set(getter_fields) | media_fields
+
     def commands(self):
         modify_cmd = ui.Subcommand(
             u'modifytmpl', help=u'change metadata fields, evaluating templates', aliases=(u'modt',)
@@ -91,6 +98,10 @@ class ModifyTmplPlugin(BeetsPlugin):
             for key in mods:
                 if key in self.non_album_fields:
                     raise ui.UserError(u'modification of non-album field `{0}` should be done on the item, not the album'.format(key))
+
+        for key in mods:
+            if key in self.computed_fields:
+                raise ui.UserError(u'modification of computed field `{0}` is not supported'.format(key))
 
         # Apply changes *temporarily*, preview them, and collect modified
         # objects.
