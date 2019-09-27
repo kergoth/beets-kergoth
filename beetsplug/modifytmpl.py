@@ -99,9 +99,9 @@ class ModifyTmplPlugin(BeetsPlugin):
                 if key in self.non_album_fields:
                     raise ui.UserError(u'modification of non-album field `{0}` should be done on the item, not the album'.format(key))
 
-        for key in mods:
+        for key in list(mods.keys()) + dels:
             if key in self.computed_fields:
-                raise ui.UserError(u'modification of computed field `{0}` is not supported'.format(key))
+                raise ui.UserError(u'modification or deletion of computed field `{0}` is not supported'.format(key))
 
         # Apply changes *temporarily*, preview them, and collect modified
         # objects.
