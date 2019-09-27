@@ -90,11 +90,13 @@ class ModifyTmplPlugin(BeetsPlugin):
         objs = albums if album else items
 
         if not album:
+            # TODO: consider changing this from UserError to promotion, automatically applying it to the album
             if any(not obj.singleton for obj in objs):
                 for key in mods:
                     if key in library.Album.item_keys:
                         raise ui.UserError(u'modification of album field `{0}` should be done on the album, not the item'.format(key))
         else:
+            # TODO: change this from UserError to a warning and prompt for confirmation
             for key in mods:
                 if key in self.non_album_fields:
                     raise ui.UserError(u'modification of non-album field `{0}` should be done on the item, not the album'.format(key))
