@@ -106,7 +106,7 @@ class ModifyTmplPlugin(BeetsPlugin):
         # Apply changes *temporarily*, preview them, and collect modified
         # objects.
         print_(u'Modifying {0} {1}s.'
-            .format(len(objs), u'album' if album else u'item'))
+               .format(len(objs), u'album' if album else u'item'))
         changed = []
         for obj in objs:
             # Changes from `modify` command here:
