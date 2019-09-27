@@ -36,3 +36,18 @@ Test use of a format function
   Modifying 1 albums.
   The Test - Blank Audio
     albumartist_sort:  -> Test, The
+
+Test error when modifying album fields on an item
+
+  $ beet modifytmpl -yW id:1 albumartist=Foo
+  error: modification of album field `albumartist` should be done on the album, not the item
+  [1]
+
+Test error when modifying item fields on an album
+
+  $ beet modifytmpl -yaW id:1 tracktotal=1
+  error: modification of non-album field `tracktotal` should be done on the item, not the album
+  [1]
+  $ beet modifytmpl -yaW id:1 track=1
+  error: modification of non-album field `track` should be done on the item, not the album
+  [1]

@@ -26,6 +26,11 @@ class ModifyTmplPlugin(BeetsPlugin):
     def __init__(self):
         super(ModifyTmplPlugin, self).__init__()
 
+        self.register_listener('pluginload', self.event_pluginload)
+
+    def event_pluginload(self):
+        self.non_album_fields = set(library.Item._media_fields) - set(library.Album.item_keys)
+
     def commands(self):
         modify_cmd = ui.Subcommand(
             u'modifytmpl', help=u'change metadata fields, evaluating templates', aliases=(u'modt',)
@@ -52,70 +57,78 @@ class ModifyTmplPlugin(BeetsPlugin):
             u'-y', u'--yes', action='store_true',
             help=u'skip confirmation'
         )
-        modify_cmd.func = modify_func
+        modify_cmd.func = self.modify_func
         return [modify_cmd]
 
+    def modify_func(self, lib, opts, args):
+        query, mods, dels = modify_parse_args(decargs(args))
+        if not mods and not dels:
+            raise ui.UserError(u'no modifications specified')
+        self.modify_items(lib, mods, dels, query, ui.should_write(opts.write),
+                          ui.should_move(opts.move), opts.album, not opts.yes)
 
-def modify_func(lib, opts, args):
-    query, mods, dels = modify_parse_args(decargs(args))
-    if not mods and not dels:
-        raise ui.UserError(u'no modifications specified')
-    modify_items(lib, mods, dels, query, ui.should_write(opts.write),
-                 ui.should_move(opts.move), opts.album, not opts.yes)
+    # Copied and tweaked from beets.ui.commands to apply a template
+    def modify_items(self, lib, mods, dels, query, write, move, album, confirm):
+        """Modifies matching items according to user-specified assignments and
+        deletions.
 
+        `mods` is a dictionary of field and value pairse indicating
+        assignments. `dels` is a list of fields to be deleted.
+        """
+        # Parse key=value specifications into a dictionary.
+        model_cls = library.Album if album else library.Item
 
-# Copied and tweaked from beets.ui.commands to apply a template
-def modify_items(lib, mods, dels, query, write, move, album, confirm):
-    """Modifies matching items according to user-specified assignments and
-    deletions.
+        # Get the items to modify.
+        items, albums = _do_query(lib, query, album, False)
+        objs = albums if album else items
 
-    `mods` is a dictionary of field and value pairse indicating
-    assignments. `dels` is a list of fields to be deleted.
-    """
-    # Parse key=value specifications into a dictionary.
-    model_cls = library.Album if album else library.Item
-
-    # Get the items to modify.
-    items, albums = _do_query(lib, query, album, False)
-    objs = albums if album else items
-
-    # Apply changes *temporarily*, preview them, and collect modified
-    # objects.
-    print_(u'Modifying {0} {1}s.'
-           .format(len(objs), u'album' if album else u'item'))
-    changed = []
-    for obj in objs:
-        # Changes from `modify` command here:
-        obj_mods = {}
-        for key, value in mods.items():
-            value = obj.evaluate_template(value)
-            obj_mods[key] = model_cls._parse(key, value)
-
-        if print_and_modify(obj, obj_mods, dels) and obj not in changed:
-            changed.append(obj)
-
-    # Still something to do?
-    if not changed:
-        print_(u'No changes to make.')
-        return
-
-    # Confirm action.
-    if confirm:
-        if write and move:
-            extra = u', move and write tags'
-        elif write:
-            extra = u' and write tags'
-        elif move:
-            extra = u' and move'
+        if not album:
+            if any(not obj.singleton for obj in objs):
+                for key in mods:
+                    if key in library.Album.item_keys:
+                        raise ui.UserError(u'modification of album field `{0}` should be done on the album, not the item'.format(key))
         else:
-            extra = u''
+            for key in mods:
+                if key in self.non_album_fields:
+                    raise ui.UserError(u'modification of non-album field `{0}` should be done on the item, not the album'.format(key))
 
-        changed = ui.input_select_objects(
-            u'Really modify%s' % extra, changed,
-            lambda o: print_and_modify(o, mods, dels)
-        )
+        # Apply changes *temporarily*, preview them, and collect modified
+        # objects.
+        print_(u'Modifying {0} {1}s.'
+            .format(len(objs), u'album' if album else u'item'))
+        changed = []
+        for obj in objs:
+            # Changes from `modify` command here:
+            obj_mods = {}
+            for key, value in mods.items():
+                value = obj.evaluate_template(value)
+                obj_mods[key] = model_cls._parse(key, value)
 
-    # Apply changes to database and files
-    with lib.transaction():
-        for obj in changed:
-            obj.try_sync(write, move)
+            if print_and_modify(obj, obj_mods, dels) and obj not in changed:
+                changed.append(obj)
+
+        # Still something to do?
+        if not changed:
+            print_(u'No changes to make.')
+            return
+
+        # Confirm action.
+        if confirm:
+            if write and move:
+                extra = u', move and write tags'
+            elif write:
+                extra = u' and write tags'
+            elif move:
+                extra = u' and move'
+            else:
+                extra = u''
+
+            changed = ui.input_select_objects(
+                u'Really modify%s' % extra, changed,
+                lambda o: print_and_modify(o, mods, dels)
+            )
+
+        # Apply changes to database and files
+        with lib.transaction():
+            for obj in changed:
+                obj.try_sync(write, move)
