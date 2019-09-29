@@ -55,5 +55,5 @@ Test error when modifying item fields on an album
 Test error when modifying computed fields
 
   $ beet modifytmpl -yW id:1 samplerate=100
-  error: modification of computed field `samplerate` is not supported
+  error: modification or deletion of computed field `samplerate` is not supported
   [1]
