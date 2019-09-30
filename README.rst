@@ -57,6 +57,8 @@ cleaning up, but others are useful pretty rarely.
 - The ``existingqueries`` plugin adds a couple queries that originated in the
   beets source.
 - The ``hasart`` plugin adds a query to check for embedded album art.
+- The ``inconsistentalbumtracks`` plugin identifies albums whose tracks have
+  inconsistent album fields.
 - The ``inlinehook`` plugin lets you define hooks inline in config.yaml with
   python, much the way ``inline`` does for fields.
 - The ``last_import`` plugin keeps track of the most recently imported items
