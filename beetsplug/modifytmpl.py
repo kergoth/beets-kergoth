@@ -26,6 +26,14 @@ class ModifyTmplPlugin(BeetsPlugin):
     def __init__(self):
         super(ModifyTmplPlugin, self).__init__()
 
+        self.config.add({
+            'steal_mod_alias': False,
+        })
+        if self.config['steal_mod_alias'].get():
+            self.aliases = [u'mod']
+        else:
+            self.aliases = [u'modt']
+
         self.register_listener('pluginload', self.event_pluginload)
 
     def event_pluginload(self):
@@ -38,12 +46,12 @@ class ModifyTmplPlugin(BeetsPlugin):
         media_fields = (library.Item._media_fields - library.Item._media_tag_fields)
         self.computed_fields = set(getter_fields) | media_fields
 
-        # Steal the 'mod' alias
-        modify_cmd.func = self.modify_func
+        if self.config['steal_mod_alias'].get():
+            modify_cmd.aliases = ()
 
     def commands(self):
         modify_cmd = ui.Subcommand(
-            u'modifytmpl', help=u'change metadata fields, evaluating templates', aliases=(u'modt',)
+            u'modifytmpl', help=u'change metadata fields, evaluating templates', aliases=self.aliases,
         )
         modify_cmd.parser.add_option(
             u'-m', u'--move', action='store_true', dest='move',
