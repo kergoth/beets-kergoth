@@ -127,7 +127,7 @@ class ImportInspectPlugin(BeetsPlugin):
                 ignored = self.ignored_existing
             else:
                 ignored = self.ignored_new
-            if key not in ignored:
+            if key not in ignored and key not in self.ignored:
                 compare_fields.append(key)
         return compare_fields
 
