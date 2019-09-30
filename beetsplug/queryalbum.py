@@ -38,7 +38,7 @@ class AlbumQuery(Query):
         return self.item_query.clause()
 
     def match(self, item):
-        return self.item_query.match()
+        return self.item_query.match(item)
 
     @classmethod
     def clear_cache(cls):
