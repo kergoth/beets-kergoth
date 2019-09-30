@@ -38,9 +38,6 @@ class ModifyTmplPlugin(BeetsPlugin):
         media_fields = (library.Item._media_fields - library.Item._media_tag_fields)
         self.computed_fields = set(getter_fields) | media_fields
 
-        # Steal the 'mod' alias
-        modify_cmd.func = self.modify_func
-
     def commands(self):
         modify_cmd = ui.Subcommand(
             u'modifytmpl', help=u'change metadata fields, evaluating templates', aliases=(u'modt',)
