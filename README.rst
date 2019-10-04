@@ -70,7 +70,8 @@ cleaning up, but others are useful pretty rarely.
   mucking up your existing library.
 - The ``otherqueries`` plugin defines other random queries of questionable
   usefulness at this time.
-- The ``crossquery`` plugin lets you query items whose albums match a sub-query.
+- The ``crossquery`` plugin lets you query albums/items whose items/album
+  match a sub-query.
 - The ``spotifyexplicit`` plugin uses the ``spotify`` plugin to look up items
   from my library, determines if Spotify considers these items as explicit
   tracks (Parental Advisory), and prints them if so. I use this to set an
