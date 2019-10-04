@@ -9,7 +9,7 @@
   > directory: .
   > ui:
   >   color: no
-  > plugins: queryalbum
+  > plugins: crossquery
   > END
 
 # Test

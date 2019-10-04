@@ -2,13 +2,13 @@
 
 Note that this is not as performant as would be ideal, but gets the job done. Do
 not use this unless it's truly necessary. Most album fields are also accessible
-on the item, so use those directly when possible. This will become entirely
+on the item, so use those directly when possible. This will become mostly
 unnecessary once https://github.com/beetbox/beets/pull/2988 is merged.
 
 Ex. `beet ls album_has:albumtotal:1`
 
 FIXME: rework to use a joined fetch with an inner join query based on the
-matching albums
+matching sub-query.
 """
 
 from __future__ import absolute_import, division, print_function
@@ -46,9 +46,9 @@ class AlbumQuery(Query):
             cls._cached_album_results = {}
 
 
-class QueryAlbumPlugin(BeetsPlugin):
+class CrossQueryPlugin(BeetsPlugin):
     def __init__(self):
-        super(QueryAlbumPlugin, self).__init__()
+        super(CrossQueryPlugin, self).__init__()
 
         class RealAlbumQuery(AlbumQuery):
             lib = _open_library(config)
