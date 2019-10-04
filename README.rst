@@ -76,6 +76,8 @@ cleaning up, but others are useful pretty rarely.
   from my library, determines if Spotify considers these items as explicit
   tracks (Parental Advisory), and prints them if so. I use this to set an
   ``advisory`` field on my tracks.
+- The ``zeroalbum`` plugin clears fields in albums in the database, obeying
+  the 'zero' plugin configuration.
 
 
 .. _beets: http://beets.io/
