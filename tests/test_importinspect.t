@@ -33,12 +33,14 @@ Test initial import confirmation on apply
     albumartist: Anar Software LLC -> An Artist
     country:  -> XW
     day: 00 -> 01
+    disctotal: 00 -> 01
     mb_albumartistid:  -> http://foo
     mb_albumid:  -> mocked
     month: 00 -> 01
     year: 0000 -> 2019
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     artist: Anar Software LLC -> An Artist
+    disc: 00 -> 01
     mb_artistid:  -> 1
     mb_trackid:  -> http://foo
     media:  -> Digital Media
@@ -74,12 +76,14 @@ Test mocked candidate inspection
     albumartist: Anar Software LLC -> An Artist
     country:  -> XW
     day: 00 -> 01
+    disctotal: 00 -> 01
     mb_albumartistid:  -> http://foo
     mb_albumid:  -> mocked
     month: 00 -> 01
     year: 0000 -> 2019
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     artist: Anar Software LLC -> An Artist
+    disc: 00 -> 01
     mb_artistid:  -> 1
     mb_trackid:  -> http://foo
     media:  -> Digital Media
@@ -117,12 +121,14 @@ Test inspect + confirmation on apply
     albumartist: Anar Software LLC -> An Artist
     country:  -> XW
     day: 00 -> 01
+    disctotal: 00 -> 01
     mb_albumartistid:  -> http://foo
     mb_albumid:  -> mocked
     month: 00 -> 01
     year: 0000 -> 2019
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     artist: Anar Software LLC -> An Artist
+    disc: 00 -> 01
     mb_artistid:  -> 1
     mb_trackid:  -> http://foo
     media:  -> Digital Media
