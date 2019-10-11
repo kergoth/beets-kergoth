@@ -14,10 +14,10 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
     def __init__(self):
         super(AlternativesPlaylistPlugin, self).__init__()
         self.config.add({
-            'auto': False,
-            'playlist_dir': '_Playlists',
-            'relative_to': 'playlist',
-            'is_relative': True,
+            'auto': True,
+            'playlist_dir': '.',
+            'relative_to': 'library',
+            'is_relative': False,
         })
 
         # FIXME: make 'library' go based on the alt root, not actual lib
