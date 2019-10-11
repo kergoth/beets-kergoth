@@ -70,7 +70,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
     def alternatives_after_update(self, alternative, lib):
         for m3u in self.find_playlists():
             try:
-                self.update_playlist(lib, alternative, m3u)
+                self.update_playlist(lib, alternative.name, m3u)
             except beets.util.FilesystemError:
                 self._log.error('Failed to update playlist: {0}'.format(
                     beets.util.displayable_path(playlist)))
@@ -145,7 +145,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         beets.plugins.send(
             'alternatives_before_update_with_lib', alternative=alt, lib=lib)
         alt.update(create=options.create)
-        beets.plugins.send('alternatives_after_update',
+        beets.plugins.send('alternatives_after_update_with_lib',
                            alternative=alt, lib=lib)
         beets.plugins.send('alternatives_after_update', alternative=alt)
 
