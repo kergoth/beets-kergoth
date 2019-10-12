@@ -52,7 +52,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
             raise beets.ui.UserError('must specify alternative')
         args = beets.ui.decargs(args)
         alternative = args.pop(0)
-        self.alternatives_after_update(alternative, lib)
+        self.write_playlists(alternative, lib)
 
     def pluginload(self):
         for plugin in beets.plugins.find_plugins():
@@ -63,17 +63,22 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                 self.playlist = plugin
 
         if not self.alternatives:
-            raise beets.ui.UserError('alternatives plugin is required for alternativesplaylist')
+            raise beets.ui.UserError(
+                'alternatives plugin is required for alternativesplaylist')
         if not self.playlist:
-            raise beets.ui.UserError('playlist plugin is required for alternativesplaylist')
+            raise beets.ui.UserError(
+                'playlist plugin is required for alternativesplaylist')
 
-    def alternatives_after_update(self, alternative, lib):
+    def write_playlists(self, alternative, lib):
         for m3u in self.find_playlists():
             try:
-                self.update_playlist(lib, alternative.name, m3u)
+                self.update_playlist(lib, alternative, m3u)
             except beets.util.FilesystemError:
                 self._log.error('Failed to update playlist: {0}'.format(
                     beets.util.displayable_path(playlist)))
+
+    def alternatives_after_update(self, alternative, lib):
+        self.write_playlists(alternative.name, lib)
 
     def find_playlists(self):
         playlist_dir = beets.util.syspath(self.playlist.playlist_dir)
@@ -87,14 +92,16 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         m3uname = os.path.relpath(m3u, playlist_dir)
 
         outm3u = os.path.join(self.playlist_dir(alternative), m3uname)
-        self._log.info('Writing playlist {}'.format(beets.util.displayable_path(outm3u)))
+        self._log.info('Writing playlist {}'.format(
+            beets.util.displayable_path(outm3u)))
 
         # Gather up the items in the playlist and map to the alternative
         m3ubase, _ = os.path.splitext(m3uname)
         query = playlist.PlaylistQuery(beets.util.as_string(m3ubase))
         pathmap = {}
         for item in lib.items(query):
-            pathmap[beets.util.bytestring_path(item.path)] = beets.util.bytestring_path(item.get(u'alt.{}'.format(alternative)) or u'')
+            pathmap[beets.util.bytestring_path(item.path)] = beets.util.bytestring_path(
+                item.get(u'alt.{}'.format(alternative)) or u'')
 
         src_base_dir = beets.util.bytestring_path(
             self.playlist.relative_to if self.playlist.relative_to
@@ -116,7 +123,8 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
 
                 newpath = pathmap.get(srcpath)
                 if not newpath:
-                    self._log.error('Failed to map path {} in playlist {} for alt {}', srcpath, m3uname, alternative)
+                    self._log.error(
+                        'Failed to map path {} in playlist {} for alt {}', srcpath, m3uname, alternative)
                     return
 
                 if is_relative or self.is_relative:
@@ -129,7 +137,8 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
             m3ufile.writelines(lines)
 
     def playlist_dir(self, alternative):
-        alt_dir = self.alternatives.config[alternative]['directory'].as_filename()
+        alt_dir = self.alternatives.config[alternative]['directory'].as_filename(
+        )
         playlist_dir = self.config['playlist_dir'].get(Filename(cwd=alt_dir))
         playlist_dir = bytestring_path(playlist_dir)
         return playlist_dir
