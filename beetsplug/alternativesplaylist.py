@@ -20,11 +20,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
             'is_relative': False,
         })
 
-        # FIXME: make 'library' go based on the alt root, not actual lib
-        if self.config['relative_to'].get() == 'library':
-            self.relative_to = beets.util.bytestring_path(
-                beets.config['directory'].as_filename())
-        elif self.config['relative_to'].get() != 'playlist':
+        if self.config['relative_to'].get() not in ['playlist', 'library']:
             self.relative_to = beets.util.bytestring_path(
                 self.config['relative_to'].as_filename())
         else:
@@ -107,8 +103,15 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
             self.playlist.relative_to if self.playlist.relative_to
             else os.path.dirname(m3u)
         )
+
+        if not self.relative_to and self.config['relative_to'] == 'library':
+            alt_dir = self.alternatives.config[alternative]['directory'].as_filename()
+            relative_to = beets.util.bytestring_path(alt_dir)
+        else:
+            relative_to = self.relative_to
+
         alt_base_dir = beets.util.bytestring_path(
-            self.relative_to if self.relative_to
+            relative_to if relative_to
             else os.path.dirname(outm3u)
         )
 
