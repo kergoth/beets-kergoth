@@ -43,22 +43,25 @@ Test with prompt
   Modifying 1 items.
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     testfield: Blank Audio
-  Really modify and move? (Yes/no/select) 
+  Really modify and move? (Yes/no/select)
 
-Test error when modifying album fields on an item
+Test warning when modifying album fields on an item
 
-  $ beet modifytmpl -yW id:1 albumartist=Foo
-  error: modification of album field `albumartist` should be done on the album, not the item
-  [1]
+  $ echo n | beet modifytmpl -yW id:1 albumartist=Foo
+  modifytmpl: modification of album field `albumartist` should be done on the album, not the item
+  Modifying 1 items.
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    albumartist: The Test -> Foo
+  Really modify and move? (Yes/no/select)
 
-Test error when modifying item fields on an album
+Test warning when modifying item fields on an album
 
-  $ beet modifytmpl -yaW id:1 tracktotal=1
-  error: modification of non-album field `tracktotal` should be done on the item, not the album
-  [1]
-  $ beet modifytmpl -yaW id:1 track=1
-  error: modification of non-album field `track` should be done on the item, not the album
-  [1]
+  $ echo n | beet modifytmpl -yaW id:1 tracktotal=1
+  modifytmpl: modification of non-album field `tracktotal` should be done on the item, not the album
+  Modifying 1 albums.
+  The Test - Blank Audio
+    tracktotal: 1
+  Really modify and move? (Yes/no/select)
 
 Test error when modifying computed fields
 
