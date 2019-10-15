@@ -37,6 +37,14 @@ Test use of a format function
   The Test - Blank Audio
     albumartist_sort:  -> Test, The
 
+Test with prompt
+
+  $ echo y | beet modifytmpl -W id:1 testfield='$album'
+  Modifying 1 items.
+  Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
+    testfield: Blank Audio
+  Really modify and move? (Yes/no/select) 
+
 Test error when modifying album fields on an item
 
   $ beet modifytmpl -yW id:1 albumartist=Foo
