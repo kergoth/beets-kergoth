@@ -102,7 +102,7 @@ class SplAlternatives(BeetsPlugin):
         m3us = {}
 
         HasAltPath = NotQuery(NoneFieldQuery('alt.{}'.format(alternative), fast=False))
-        for playlist in self._matched_playlists:
+        for playlist in sorted(self._matched_playlists):
             name, (query, q_sort), (album_query, a_q_sort) = playlist
             self._log.debug(u"Creating playlist {0}", name)
             items = []
@@ -125,7 +125,8 @@ class SplAlternatives(BeetsPlugin):
 
                 item_path = item.get('alt.{}'.format(alternative))
                 if item_path:
-                    item_path = os.path.relpath(bytestring_path(item_path), playlist_dir)
+                    m3u_path = normpath(os.path.join(playlist_dir, bytestring_path(m3u_name)))
+                    item_path = os.path.relpath(bytestring_path(item_path), os.path.dirname(m3u_path))
                     if item_path not in m3us[m3u_name]:
                         m3us[m3u_name].append(item_path)
 
@@ -163,7 +164,7 @@ class SplAlternatives(BeetsPlugin):
         beets.plugins.send(
             'alternatives_before_update_with_lib', alternative=alt, lib=lib)
         alt.update(create=options.create)
-        beets.plugins.send('alternatives_after_update',
+        beets.plugins.send('alternatives_after_update_with_lib',
                            alternative=alt, lib=lib)
         beets.plugins.send('alternatives_after_update', alternative=alt)
 
