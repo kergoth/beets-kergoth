@@ -43,7 +43,7 @@ Test with prompt
   Modifying 1 items.
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     testfield: Blank Audio
-  Really modify and move? (Yes/no/select)
+  Really modify and move? (Yes/no/select) 
 
 Test warning when modifying album fields on an item
 
@@ -52,7 +52,7 @@ Test warning when modifying album fields on an item
   Modifying 1 items.
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
     albumartist: The Test -> Foo
-  Really modify and move? (Yes/no/select)
+  Really modify and move? (Yes/no/select) 
 
 Test warning when modifying item fields on an album
 
@@ -61,7 +61,7 @@ Test warning when modifying item fields on an album
   Modifying 1 albums.
   The Test - Blank Audio
     tracktotal: 1
-  Really modify and move? (Yes/no/select)
+  Really modify and move? (Yes/no/select) 
 
 Test error when modifying computed fields
 
