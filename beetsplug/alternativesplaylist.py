@@ -4,8 +4,7 @@ import fnmatch
 import os
 
 import beets
-from beets.util import (bytestring_path, mkdirall, normpath, path_as_posix,
-                        sanitize_path, syspath)
+from beets.util import bytestring_path, mkdirall
 from beetsplug import playlist
 from confuse import Filename
 

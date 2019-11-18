@@ -18,8 +18,8 @@ from __future__ import division, absolute_import, print_function
 
 from beets import library, ui
 from beets.plugins import BeetsPlugin
-from beets.ui import decargs, print_
-from beets.ui.commands import _do_query, modify_cmd, modify_parse_args, print_and_modify
+from beets.ui import commands, decargs, print_
+from beets.ui.commands import _do_query, modify_parse_args, print_and_modify
 
 
 class ModifyTmplPlugin(BeetsPlugin):
