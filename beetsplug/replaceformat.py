@@ -75,7 +75,7 @@ class ReplacePlugin(BeetsPlugin):
 def get_replacements(config_path):
     replacements = []
     lookup = functools.reduce(lambda x, y: x[y], config_path.split("."), config)
-    for pattern, repl in lookup.as_pairs():
+    for pattern, repl in lookup.get(dict).items():
         try:
             replacements.append((re.compile(pattern), repl or ''))
         except re.error as exc:
