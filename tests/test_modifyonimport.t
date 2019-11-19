@@ -17,7 +17,7 @@
   >     '': 'wrong_query:foo'
   > END
   $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
-  error: modifyonimport.modify_album['']: unexpected query `wrong_query:foo` in value
+  error: modifyonimport.modify_album[""]: unexpected query `wrong_query:foo` in value
   [1]
   $ rm -f library.db
 
@@ -31,7 +31,7 @@
   >     foo: ''
   > END
   $ beet import -qCWA "$TESTDIR/data/250-milliseconds-of-silence.mp3"
-  error: modifyonimport.modify_album['foo']: no modifications found
+  error: modifyonimport.modify_album["foo"]: no modifications found
   [1]
   $ rm -f library.db
 
