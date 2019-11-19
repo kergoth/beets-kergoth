@@ -78,12 +78,6 @@ cleaning up, but others are useful pretty rarely.
   ``advisory`` field on my tracks.
 - The ``zeroalbum`` plugin clears fields in albums in the database, obeying
   the 'zero' plugin configuration.
-- The ``splalternatives`` plugin generates the playlists from the
-  ``smartplaylists`` plugin for the alternatives defined from the ``alternatives``
-  plugin, ensuring our smartplaylists are available in any defined alternatives.
-  This is far from ideal, and ``smartplaylists`` itself has some issues,
-  particularly around performance, so I'm sticking to supplementing ``beets`` with
-  ``rockuefort`` for the playlist generation for now.
 
 
 .. _beets: http://beets.io/
