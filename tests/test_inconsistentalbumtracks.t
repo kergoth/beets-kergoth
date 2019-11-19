@@ -48,10 +48,5 @@ Test ignored_fields
   Modifying 1 albums.
   Anar Software LLC - Blank Audio
     genre:  -> Silence
-  $ beet modify -yW id:2 album='Blank Audio' genre=inconsistent
-  Modifying 1 items.
-  Anar Software LLC - wrong - 250 Milliseconds of Silence
-    album: wrong -> Blank Audio
-    genre: Silence -> inconsistent
-
+  $ beet modify -yW id:2 album='Blank Audio' genre=inconsistent >/dev/null
   $ beet inconsistent-album-tracks
