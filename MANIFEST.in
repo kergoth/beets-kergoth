@@ -5,3 +5,4 @@ global-exclude *.py[cod]
 global-exclude __pycache__
 tox.ini
 LICENSE.md
+CHANGELOG.md
