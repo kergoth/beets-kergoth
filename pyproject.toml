@@ -27,7 +27,6 @@ pytest = "^3.0"
 cram = "^0.7.0"
 pytest-cram = "^0.2.0"
 flake8 = "^3.7.8"
-mypy = "^0.720"
 pytest-cov = "^2.7.1"
 
 [build-system]
