@@ -15,7 +15,7 @@ master_doc = 'index'
 project = u'beets-kergoth'
 copyright = u'2019, Christopher Larson'
 
-version = '0.3'
-release = '0.3.3b'
+version = '0.4'
+release = '0.4.0'
 
 pygments_style = 'sphinx'
