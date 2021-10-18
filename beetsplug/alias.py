@@ -21,6 +21,7 @@ import confuse
 import glob
 import optparse
 import os
+import shlex
 import six
 import subprocess
 import sys
@@ -30,7 +31,6 @@ from beets import ui
 from beets.plugins import BeetsPlugin
 from beets.ui import Subcommand, print_
 from beets.ui.commands import default_commands
-from beets.util import shlex_split
 
 if sys.version_info >= (3, 3):
     from collections import abc
@@ -57,7 +57,7 @@ class AliasCommand(Subcommand):
         if args is None:
             args = []
 
-        split_command = shlex_split(self.command)
+        split_command = shlex.split(self.command)
         command = split_command[0]
         args = split_command[1:] + args
         if command.startswith('!'):
