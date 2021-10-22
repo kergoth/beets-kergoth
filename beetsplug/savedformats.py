@@ -4,6 +4,7 @@ from __future__ import division, absolute_import, print_function
 
 from beets import config
 from beets.plugins import BeetsPlugin
+from beets.library import Album, Item
 
 
 class SavedFormatsPlugin(BeetsPlugin):
@@ -25,16 +26,19 @@ class SavedFormatsPlugin(BeetsPlugin):
         for field, template in config['item_formats'].items():
             self._log.debug('adding item field {}', field)
 
+            template = template.as_str()
+
             def apply_item(item, field=field, template=template):
-                return self.apply_template(field, template.as_str(), item)
+                value = item.evaluate_template(template)
+                return item._type(field).parse(value)
             self.template_fields[field] = apply_item
 
         for field, template in config['album_formats'].items():
             self._log.debug('adding album field {}', field)
 
-            def apply_album(album, field=field, template=template):
-                return self.apply_template(field, template.as_str(), album)
-            self.album_template_fields[field] = apply_album
+            template = template.as_str()
 
-    def apply_template(self, field, template, model):
-        return model.evaluate_template(template)
+            def apply_album(album, field=field, template=template):
+                value = album.evaluate_template(template)
+                return album._type(field).parse(value)
+            self.album_template_fields[field] = apply_album
