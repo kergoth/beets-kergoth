@@ -103,7 +103,7 @@ class AllTrackQuery(Query):
             albums = set()
             for album_id, items in grouped_items:
                 items = list(items)
-                album = items[0].get_album()
+                album = items[0]._cached_album()
                 all_items = album.items()
                 if len(items) == len(all_items):
                     albums.add(album_id)
