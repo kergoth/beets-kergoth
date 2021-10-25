@@ -9,29 +9,22 @@ from beets.plugins import BeetsPlugin
 
 
 class SavedQuery(Query):
-    model_name = 'invalid'
-
-    def __init__(self, name):
-        self.name = name
-        queries = config[self.model_name + '_queries']
-        self.query_string = queries[name].as_str()
-        self.query, _ = parse_query_string(self.query_string, self.model)
-
-    def clause(self):
-        return self.query.clause()
-
-    def match(self, item):
-        return self.query.match(item)
+    queries = None
+    def __new__(cls, name):
+        return cls.queries[name]
 
 
-class ItemSavedQuery(SavedQuery):
-    model_name = 'item'
-    model = Item
+class FactoryDict(dict):
+    def __init__(self, factory, iterable=None, **kwargs):
+        if iterable is not None:
+            super().__init__(iterable)
+        else:
+            super().__init__(**kwargs)
+        self.factory = factory
 
-
-class AlbumSavedQuery(SavedQuery):
-    model_name = 'album'
-    model = Album
+    def __missing__(self, name):
+        self[name] =  value = self.factory(name)
+        return value
 
 
 class SavedQueriesPlugin(BeetsPlugin):
@@ -55,21 +48,45 @@ class SavedQueriesPlugin(BeetsPlugin):
             'album_queries': {},
         })
 
+        self.item_query_objects = FactoryDict(self.parse_item_query)
+        self.album_query_objects = FactoryDict(self.parse_album_query)
+
+        class ItemSavedQuery(SavedQuery):
+            queries = self.item_query_objects
+
+        class AlbumSavedQuery(SavedQuery):
+            queries = self.album_query_objects
+
         self._log.debug('adding named item query `query`')
-        self._log.debug('adding named album query `album_query`')
         self.item_queries = {'query': ItemSavedQuery}
+        self._log.debug('adding named album query `album_query`')
         self.album_queries = {'album_query': AlbumSavedQuery}
+
         if self.config['add_fields'].get():
             self.item_types = {}
             self.template_fields = {}
             for name in config['item_queries'].keys():
                 self._log.debug('adding item field {}', name)
                 self.item_types[name] = types.BOOLEAN
-                self.template_fields[name] = lambda item, name=name: ItemSavedQuery(name).match(item)
+                self.template_fields[name] = lambda item, name=name: self.item_query_objects[name].match(item)
 
             self.album_types = {}
             self.album_template_fields = {}
             for name in config['album_queries'].keys():
                 self._log.debug('adding album field {}', name)
                 self.album_types[name] = types.BOOLEAN
-                self.album_template_fields[name] = lambda album, name=name: AlbumSavedQuery(name).match(album)
+                self.album_template_fields[name] = lambda album, name=name: self.album_query_objects[name].match(album)
+
+    def parse_item_query(self, name):
+        if name not in config['item_queries']:
+            # Fall back to album
+            if name in config['album_queries']:
+                return self.parse_album_query(name)
+        querystring = config['item_queries'][name].as_str()
+        query, _ = parse_query_string(querystring, Item)
+        return query
+
+    def parse_album_query(self, name):
+        querystring = config['album_queries'][name].as_str()
+        query, _ = parse_query_string(querystring, Album)
+        return query
