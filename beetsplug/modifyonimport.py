@@ -2,12 +2,13 @@
 
 from __future__ import absolute_import, division, print_function
 
+import shlex
+
 from beets import ui, util
 from beets.library import Album, Item, parse_query_string
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs
 from beets.ui.commands import modify_parse_args, print_and_modify
-from beets.util import shlex_split
 
 
 class ModifyOnImport(BeetsPlugin):
@@ -52,7 +53,7 @@ class ModifyOnImport(BeetsPlugin):
 
     def parse_modify(self, modify, model_cls):
         modify = util.as_string(modify)
-        args = shlex_split(modify)
+        args = shlex.split(modify)
         query, mods, dels = modify_parse_args(decargs(args))
         return ' '.join(query), mods, dels
 
