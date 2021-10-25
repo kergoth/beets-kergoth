@@ -84,8 +84,12 @@ class InlineHookPlugin(BeetsPlugin):
         super(InlineHookPlugin, self).__init__()
 
         self.config.add({
-            'hooks': []
+            'hooks': [],
+            'argspecs': {}
         })
+
+        self.argspecs = dict(InlineHookPlugin.argspecs)
+        self.argspecs.update(self.config['argspecs'].get())
 
         inline_hooks = self.config['hooks'].get(list)
 
