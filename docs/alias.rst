@@ -40,7 +40,7 @@ Example Configuration
         empty-artist: ls artist::'^$'
         empty-album: ls album::'^$' singleton:false
 
-        # Mac-specific, relies on external `beet-open` script
+        # Mac-specific
         picard:
           command: '!open -A -a "MusicBrainz Picard"'
           help: Open items in MusicBrainz Picard
