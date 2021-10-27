@@ -66,4 +66,4 @@ class HookScriptsPlugin(BeetsPlugin):
             if args:
                 cmd.extend(args)
             self._log.info(u'Running {}'.format(subprocess.list2cmdline(cmd)))
-            subprocess.check_call(cmd, shell=False, stdin=open('/dev/null', 'r'))
+            subprocess.check_call(cmd, shell=False, stdin=subprocess.DEVNULL)
