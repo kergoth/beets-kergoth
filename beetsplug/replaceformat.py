@@ -47,26 +47,46 @@ class ReplacePlugin(BeetsPlugin):
         self.template_funcs['replace_path'] = self.replace_path
         self.template_funcs['sub'] = self.sub
         self.template_funcs['sub_path'] = self.sub_path
+        self.replacements = {}
+        self.patterns = {}
 
     def replace(self, config_path, string):
-        replacements = get_replacements(config_path)
+        if config_path in self.replacements:
+            replacements = self.replacements[config_path]
+        else:
+            replacements = self.replacements[config_path] = get_replacements(config_path)
+
         for regex, repl in replacements:
             string = regex.sub(repl, string)
         return string
 
     def replace_path(self, config_path, path):
-        replacements = get_replacements(config_path)
+        if config_path in self.replacements:
+            replacements = self.replacements[config_path]
+        else:
+            replacements = self.replacements[config_path] = get_replacements(config_path)
+
         return util.sanitize_path(path, replacements)
 
     def sub(self, string, pattern, repl=''):
+        if pattern in self.patterns:
+            pattern = self.patterns[pattern]
+        else:
+            pattern = self.patterns[pattern] = re.compile(pattern)
+
         try:
-            return re.compile(pattern).sub(repl, string)
+            return pattern.sub(repl, string)
         except re.error as exc:
             raise UserError(u'%sub: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
 
     def sub_path(self, path, pattern, repl=''):
+        if pattern in self.patterns:
+            pattern = self.patterns[pattern]
+        else:
+            pattern = self.patterns[pattern] = re.compile(pattern)
+
         try:
-            return util.sanitize_path(path, [(re.compile(pattern), repl)])
+            return util.sanitize_path(path, [(pattern, repl)])
         except re.error as exc:
             raise UserError(u'%sub_path: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
 
