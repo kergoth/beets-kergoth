@@ -6,6 +6,7 @@ import glob
 import os
 import subprocess
 
+from beets import config
 from beets.plugins import BeetsPlugin
 from beets.util import py3_path, bytestring_path
 
@@ -25,6 +26,12 @@ class HookScriptsPlugin(BeetsPlugin):
         paths = self.config['hookspath'].as_str_seq(split=False)
         paths = [py3_path(p) for p in paths]
         self.paths = paths
+
+        self.hookenv = dict(os.environ)
+
+        verbose = config['verbose'].get(int)
+        if verbose:
+            self.hookenv['BEETS_VERBOSE'] = str(verbose)
 
         hooks = self.config['hooks'].as_str_seq()
         self.hooks = hooks
@@ -66,4 +73,4 @@ class HookScriptsPlugin(BeetsPlugin):
             if args:
                 cmd.extend(args)
             self._log.info(u'Running {}'.format(subprocess.list2cmdline(cmd)))
-            subprocess.check_call(cmd, shell=False, stdin=subprocess.DEVNULL)
+            subprocess.check_call(cmd, shell=False, stdin=subprocess.DEVNULL, env=self.hookenv)
