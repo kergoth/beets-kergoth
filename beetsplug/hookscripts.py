@@ -50,6 +50,7 @@ class HookScriptsPlugin(BeetsPlugin):
             if argstring:
                 argstring = '[' + argstring + ']'
                 args = eval(argstring, kwargs)
+                args = map(str, args)
                 self._log.debug(u'Arguments for {} hook processed from {} to {}'.format(hook, argstring, repr(args)))
                 return args
 
