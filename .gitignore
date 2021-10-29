@@ -16,3 +16,6 @@ __pycache__
 poetry.lock
 
 /dist/
+
+# ignore PyCharm config
+/.idea/
