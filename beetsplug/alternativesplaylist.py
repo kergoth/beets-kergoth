@@ -4,9 +4,8 @@ import fnmatch
 import os
 
 import beets
-from beets.util import bytestring_path, mkdirall
+from beets.util import bytestring_path, mkdirall, syspath
 from beetsplug import playlist
-from confuse import Filename
 
 
 class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
@@ -30,8 +29,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
 
         self.register_listener('pluginload', self.pluginload)
         if self.config['auto'].get():
-            self.register_listener(
-                'alternatives_after_update_with_lib', self.alternatives_after_update)
+            self.register_listener('alternatives_after_update', self.alternatives_after_update)
 
     def commands(self):
         spl_alt_update = beets.ui.Subcommand(
@@ -65,6 +63,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                 'playlist plugin is required for alternativesplaylist')
 
     def write_playlists(self, alternative, lib):
+        self._log.debug('alternativesplaylist: write_playlists(%s)' % alternative)
         for m3u in self.find_playlists():
             try:
                 self.update_playlist(lib, alternative, m3u)
@@ -73,7 +72,13 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                     beets.util.displayable_path(playlist)))
 
     def alternatives_after_update(self, alternative, lib):
-        self.write_playlists(alternative.name, lib)
+        if 'playlists' in self.alternatives.config[alternative.name]:
+            enabled = self.alternatives.config[alternative.name]['playlists'].get()
+        else:
+            enabled = True
+
+        if enabled:
+            self.write_playlists(alternative.name, lib)
 
     def find_playlists(self):
         playlist_dir = beets.util.syspath(self.playlist.playlist_dir)
@@ -83,10 +88,19 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                 yield m3u
 
     def update_playlist(self, lib, alternative, m3u):
+        config = self.alternatives.config[alternative]
+        if 'directory' in config:
+            alt_dir = config['directory'].as_str()
+        else:
+            alt_dir = alternative
+        alt_dir = bytestring_path(alt_dir)
+        if not os.path.isabs(syspath(alt_dir)):
+            alt_dir = os.path.join(lib.directory, alt_dir)
+
         playlist_dir = beets.util.bytestring_path(self.playlist.playlist_dir)
         m3uname = os.path.relpath(m3u, playlist_dir)
 
-        outm3u = os.path.join(self.playlist_dir(alternative), m3uname)
+        outm3u = os.path.join(self.playlist_dir(alternative, alt_dir), m3uname)
         self._log.info('Writing playlist {}'.format(
             beets.util.displayable_path(outm3u)))
 
@@ -95,8 +109,9 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         query = playlist.PlaylistQuery(beets.util.as_string(m3ubase))
         pathmap = {}
         for item in lib.items(query):
-            pathmap[beets.util.bytestring_path(item.path)] = beets.util.bytestring_path(
-                item.get(u'alt.{}'.format(alternative)) or u'')
+            alt_path = item.get(u'alt.{}'.format(alternative))
+            if alt_path:
+                pathmap[beets.util.bytestring_path(item.path)] = beets.util.bytestring_path(alt_path)
 
         src_base_dir = beets.util.bytestring_path(
             self.playlist.relative_to if self.playlist.relative_to
@@ -104,7 +119,6 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         )
 
         if not self.relative_to and self.config['relative_to'] == 'library':
-            alt_dir = self.alternatives.config[alternative]['directory'].as_filename()
             relative_to = beets.util.bytestring_path(alt_dir)
         else:
             relative_to = self.relative_to
@@ -122,43 +136,43 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                 if is_relative:
                     srcpath = os.path.join(src_base_dir, srcpath)
                 srcpath = beets.util.normpath(srcpath)
+                if not os.path.exists(srcpath):
+                    self._log.error('Path {} in playlist {} does not exist', srcpath, m3uname)
+                    continue
 
                 newpath = pathmap.get(srcpath)
                 if not newpath:
-                    self._log.error(
+                    self._log.debug(
                         'Failed to map path {} in playlist {} for alt {}', srcpath, m3uname, alternative)
-                    return
+                    continue
 
                 if is_relative or self.is_relative:
                     newpath = os.path.relpath(newpath, alt_base_dir)
 
                 lines.append(line.replace(srcpath, newpath))
 
-        mkdirall(outm3u)
-        with open(outm3u, 'wb') as m3ufile:
-            m3ufile.writelines(lines)
+        if lines:
+            mkdirall(outm3u)
+            with open(outm3u, 'wb') as m3ufile:
+                m3ufile.writelines(lines)
 
-    def playlist_dir(self, alternative):
-        alt_dir = self.alternatives.config[alternative]['directory'].as_filename(
-        )
-        playlist_dir = self.config['playlist_dir'].get(Filename(cwd=alt_dir))
+    def playlist_dir(self, alternative, alt_dir):
+        playlist_dir = self.config['playlist_dir'].as_str()
         playlist_dir = bytestring_path(playlist_dir)
+        if not os.path.isabs(syspath(playlist_dir)):
+            playlist_dir = os.path.join(alt_dir, playlist_dir)
         return playlist_dir
 
     def patch_alt_update(self, lib, options):
-        """Tweaked update method for alternatives to send events with the lib object."""
+        """Tweaked update method for alternatives to send events."""
         try:
             alt = self.alternatives.alternative(options.name, lib)
         except KeyError as e:
             raise beets.ui.UserError(u"Alternative collection '{0}' not found."
                                      .format(e.args[0]))
-        beets.plugins.send('alternatives_before_update', alternative=alt)
-        beets.plugins.send(
-            'alternatives_before_update_with_lib', alternative=alt, lib=lib)
+        beets.plugins.send('alternatives_before_update', alternative=alt, lib=lib)
         alt.update(create=options.create)
-        beets.plugins.send('alternatives_after_update_with_lib',
-                           alternative=alt, lib=lib)
-        beets.plugins.send('alternatives_after_update', alternative=alt)
+        beets.plugins.send('alternatives_after_update', alternative=alt, lib=lib)
 
 
 def find(dir, dirfilter=None, **walkoptions):
