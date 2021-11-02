@@ -62,13 +62,13 @@ class AliasCommand(Subcommand):
         command_args = split_command[1:]
 
         # loop through beet arguments, starting from behind
-        for i in range( len( args ) - 1, -1, -1 ):
+        for i in range(len(args) - 1, -1, -1):
             # replace all occurences of token {X} with parameter (if it exists)
-            token = "{i}".replace( "i", str( i ) )
+            token = "{i}".replace("i", str(i))
             token_replaced = False
-            for j in range( 0, len( command_args ), 1 ):
+            for j in range(0, len(command_args), 1):
                 if token in command_args[j]:
-                    command_args[j] = command_args[j].replace( token, args[i] )
+                    command_args[j] = command_args[j].replace(token, args[i])
                     token_replaced = True
             # remove parameter if it has been used for a replacement
             if token_replaced:
@@ -76,9 +76,9 @@ class AliasCommand(Subcommand):
 
         # search for token {} and replace it with the rest of the arguments, if it exists or append otherwise
         if '{}' in command_args:
-            for i in range( len( command_args ) - 1, -1, -1 ):
+            for i in range(len(command_args) - 1, -1, -1):
                 if command_args[i] == '{}':
-                    command_args[i:i+1] = args
+                    command_args[i:i + 1] = args
         else:
             command_args = command_args + args
 
