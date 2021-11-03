@@ -42,7 +42,6 @@ class SavedFormatsPlugin(BeetsPlugin):
     def dirty_item(self, item):
         cache = self.cache[item.__class__]
         if item.id and item.id in cache:
-            self._log.warning(f"Invalidating cache for {item}")
             del cache[item.id]
 
     def set_template_fields(self):
@@ -63,6 +62,7 @@ class SavedFormatsPlugin(BeetsPlugin):
                     if item.id in self.cache:
                         if field in self.cache[item.id]:
                             return self.cache[item.id][field]
+
                     field_type = item._type(field)
                     value = self.cache[item.id][field] = field_type.parse(
                         item.evaluate_template(template)
