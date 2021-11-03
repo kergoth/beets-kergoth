@@ -30,11 +30,11 @@ class SavedFormatsPlugin(BeetsPlugin):
         self.register_listener("item_removed", self.item_removed)
         self.set_template_fields()
 
-    def database_change(self, _, item):
-        self.dirty_item(item)
-        if isinstance(item, Album):
-            for item in item.items():
-                self.dirty_item(item)
+    def database_change(self, lib, model):
+        self.dirty_item(model)
+        if isinstance(model, Album):
+            for model in model.items():
+                self.dirty_item(model)
 
     def item_removed(self, item):
         self.dirty_item(item)
