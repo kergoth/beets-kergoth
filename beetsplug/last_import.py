@@ -69,7 +69,7 @@ class LastimportPlugin(BeetsPlugin):
     def imported(self, session, task):
         if task.is_album:
             item = task.album
-            for _item in self.imported_items():
+            for _item in task.imported_items():
                 _item['last_import'] = 1
                 _item.store('last_import')
         else:
