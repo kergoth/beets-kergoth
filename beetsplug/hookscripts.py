@@ -1,6 +1,7 @@
 """Run external scripts when beets events are fired."""
 
 from __future__ import division, absolute_import, print_function
+import collections
 
 import glob
 import os
@@ -53,6 +54,7 @@ class HookScriptsPlugin(BeetsPlugin):
             if argstring:
                 argstring = "[" + argstring + "]"
                 args = eval(argstring, globals(), kwargs)
+                args = list(flatten(args))
                 for i, arg in enumerate(args):
                     if isinstance(arg, bytes):
                         arg = arg.decode("utf-8")
@@ -96,3 +98,10 @@ class HookScriptsPlugin(BeetsPlugin):
             )
         except OSError as exc:
             raise ui.UserError(f"hookscripts: couldn't invoke '{cmdstring}': {exc}")
+
+def flatten(l):
+    for el in l:
+        if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
+            yield from el
+        else:
+            yield el
