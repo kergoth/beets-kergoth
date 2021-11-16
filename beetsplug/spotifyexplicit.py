@@ -1,10 +1,10 @@
 from beets import ui
-from beets.plugins import BeetsPlugin, find_plugins
+from beets import plugins
 
 
-class SpotifyExplicitPlugin(BeetsPlugin):
+class SpotifyExplicitPlugin(plugins.BeetsPlugin):
     def commands(self):
-        for plugin in find_plugins():
+        for plugin in plugins.find_plugins():
             if plugin.name == 'spotify':
                 self.spotify = plugin
                 break
@@ -12,15 +12,18 @@ class SpotifyExplicitPlugin(BeetsPlugin):
             raise ui.UserError('spotify plugin is required')
 
         def explicits(lib, opts, args):
-            results = self.spotify._match_library_tracks(lib, ui.decargs(args))
+            args = ui.decargs(args)
+            items = lib.items(args)
+            results = self.spotify._match_library_tracks(lib, args)
             if results:
-                for track in results:
+                for item, track in zip(items, results):
                     if track['explicit']:
                         title = track['name']
                         album = track['album']['name']
                         artist = track['artists'][0]['name']
                         tracknum = track['track_number']
                         url = track['external_urls']['spotify']
+                        plugins.send("spotify_explicit_track", lib=lib, track=track, item=item)
                         print('{} - {} - {} - {} - {}'.format(album, tracknum, artist, title, url))
 
         explicit_cmd = ui.Subcommand(
