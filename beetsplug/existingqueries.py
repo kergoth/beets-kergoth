@@ -21,13 +21,6 @@ class NoneFieldQuery(NoneQuery):
     def __init__(self, field, _, fast=True):
         super(NoneFieldQuery, self).__init__(field, fast)
 
-    def match(self, item):
-        try:
-            return item[self.field] is None
-        except KeyError:
-            return True
-
-
 class ExistingQueriesPlugin(BeetsPlugin):
     item_queries = {'any': AnyQuery}
     album_queries = {'any': AnyQuery}
