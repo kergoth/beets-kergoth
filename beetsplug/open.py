@@ -1,4 +1,4 @@
-"""Open media paths with external applications using the appropriate system-specific command."""
+"""Open media paths with external applications."""
 
 import os
 import subprocess
@@ -10,7 +10,7 @@ class OpenPlugin(plugins.BeetsPlugin):
     def commands(self):
         open_cmd = ui.Subcommand(
             "open",
-            help="Open media paths with external applications using the appropriate system-specific command.",
+            help="Open media paths with external applications.",
         )
         open_cmd.parser.add_option(
             "-A",
