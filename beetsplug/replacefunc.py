@@ -44,7 +44,7 @@ class ReplaceFuncPlugin(BeetsPlugin):
                 )
             except confuse.ConfigError as exc:
                 raise UserError(
-                    f"Configuration error in `simplereplace.{field}`: {exc}"
+                    f"Configuration error in `{self.name}.{field}`: {exc}"
                 )
 
         return util.sanitize_path(path, replacements)
