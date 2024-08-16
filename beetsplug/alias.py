@@ -26,8 +26,7 @@ import six
 import subprocess
 import sys
 
-from beets import plugins
-from beets import ui
+from beets import config, plugins, ui
 from beets.plugins import BeetsPlugin
 from beets.ui import Subcommand, print_
 from beets.ui.commands import default_commands
@@ -155,21 +154,22 @@ class AliasPlugin(BeetsPlugin):
         else:
             commands = {}
 
-        for alias in self.config['aliases'].keys():
-            if alias in commands:
-                raise confuse.ConfigError(u'alias.aliases.{0} was specified multiple times'.format(alias))
+        for path, subview in [('alias.aliases', self.config['aliases']), ('aliases', config['aliases'])]:
+            for alias in subview.keys():
+                if alias in commands:
+                    raise confuse.ConfigError(u'alias {1} was specified multiple times'.format(alias))
 
-            command = self.config['aliases'][alias].get()
-            if isinstance(command, six.text_type):
-                commands[alias] = self.get_command(alias, command)
-            elif isinstance(command, abc.Mapping):
-                command_text = command.get('command')
-                if not command_text:
-                    raise confuse.ConfigError(u'alias.aliases.{0}.command not found'.format(alias))
-                help_text = command.get('help', command_text)
-                commands[alias] = self.get_command(alias, command_text, help_text)
-            else:
-                raise confuse.ConfigError(u'alias.aliases.{0} must be a string or single-element mapping'.format(alias))
+                command = subview[alias].get()
+                if isinstance(command, six.text_type):
+                    commands[alias] = self.get_command(alias, command)
+                elif isinstance(command, abc.Mapping):
+                    command_text = command.get('command')
+                    if not command_text:
+                        raise confuse.ConfigError(u'{0}.{1}.command not found'.format(path, alias))
+                    help_text = command.get('help', command_text)
+                    commands[alias] = self.get_command(alias, command_text, help_text)
+                else:
+                    raise confuse.ConfigError(u'{0}.{1} must be a string or single-element mapping'.format(path, alias))
 
         if 'alias' in commands:
             raise ui.UserError(u'alias `alias` is reserved for the alias plugin')
