@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Removed modifytmpl plugin. Beets now has support for formats with modify.
+- Updated for beets 2.0 changes.
+- alias: also pull from a toplevel aliases section of the config.
+
 ## [0.4.0] - 2019-11-21
 
 ### Added
