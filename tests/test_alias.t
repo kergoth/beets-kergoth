@@ -46,6 +46,9 @@ Test exit code
 
   $ beet false
   [1]
+  $ beet -v false 2>&1 | grep 'alias:'
+  alias: Running false
+  alias: command `false` failed with 1
 
 Test command with help text specified
 
