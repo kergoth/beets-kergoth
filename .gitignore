@@ -11,6 +11,7 @@ __pycache__
 .coverage
 /pip-wheel-metadata
 /*.egg-info
+.direnv/
 
 # This is a library, don't need to lock down
 poetry.lock
