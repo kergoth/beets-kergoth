@@ -41,10 +41,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added advisory plugin
 - Added inconsistentalbumtracks plugin
 - Added nowrite plugin
-- Added zeroalbum plugin
 - Added prototype alternativesplaylist plugin
 - Added prototype convertsingletons plugin
 - Added prototype crossquery plugin
+- Added zeroalbum plugin
+- alias: send events on success/failure
 - modifyonimport: added configuration sanity checks
 - modifytmpl: added up front checks for common user mistakes in field changes
 - spotifyexplicit: send an event for each explicit track

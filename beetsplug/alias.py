@@ -87,17 +87,8 @@ class AliasCommand(Subcommand):
             command = command[1:]
             argv = [command] + args
 
-            if self.log:
-                self.log.debug('Running {}', subprocess.list2cmdline(argv))
-
-            try:
+            def run_func():
                 return subprocess.check_call(argv)
-            except subprocess.CalledProcessError as exc:
-                if self.log:
-                    self.log.debug(u'command `{0}` failed with {1}', subprocess.list2cmdline(argv), exc.returncode)
-                plugins.send('cli_exit', lib=lib)
-                lib._close()
-                sys.exit(exc.returncode)
         else:
             argv = [command] + args
             cmdname = argv[0]
@@ -110,12 +101,45 @@ class AliasCommand(Subcommand):
             else:
                 raise ui.UserError(u"unknown command '{0}'".format(cmdname))
 
-            if self.log:
-                self.log.debug('Running {}', subprocess.list2cmdline(argv))
-
             suboptions, subargs = subcommand.parse_args(argv[1:])
-            return subcommand.func(lib, suboptions, subargs)
+            def run_func():
+                return subcommand.func(lib, suboptions, subargs)
 
+        if self.log:
+            self.log.debug('Running {}', subprocess.list2cmdline(argv))
+
+        try:
+            run_func()
+        except subprocess.CalledProcessError as exc:
+            self.failed(lib, self.alias, command, args, exc.returncode)
+            plugins.send('cli_exit', lib=lib)
+            lib._close()
+            sys.exit(exc.returncode)
+        except SystemExit as exc:
+            if exc.code not in [None, 0]:
+                self.failed(lib, self.alias, command, args, exc.code)
+                raise
+        except Exception as exc:
+            self.failed(lib, self.alias, command, args, message=str(exc))
+            raise
+
+        plugins.send('alias_succeeded', lib=lib, alias=self.alias, command=command, args=args)
+
+    def failed(self, lib, alias, command, args, exitcode=None, message=""):
+        plugins.send(
+            "alias_failed",
+            lib=lib,
+            alias=self.alias,
+            command=command,
+            args=args,
+            exitcode=exitcode,
+            message=message
+        )
+        if self.log:
+            exitmsg = " with {}".format(exitcode) if exitcode else ""
+            if message:
+                message = ": " + message
+            self.log.debug(u'command `{}{}` failed{}{}', command, ' ' + subprocess.list2cmdline(args) if args else '', exitmsg, message)
 
 class AliasPlugin(BeetsPlugin):
     """Support for beets command aliases, not unlike git."""
