@@ -52,8 +52,7 @@ def make_table( results: Results, config: Configuration, use_album_format: bool 
         [ table.add_column( c ) for c in fields ]
 
     # make actual table
-    for r in results:
-        table.add_row( *[ r.evaluate_template( tmpl ) for tmpl in fields_tmpl ] )
+    [ table.add_row( *[ r.evaluate_template( tmpl ) for tmpl in fields_tmpl ] ) for r in results ]
 
     return table
 

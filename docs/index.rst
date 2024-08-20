@@ -8,3 +8,4 @@
    replaceformat
    savedformats
    savedqueries
+   tablelist
