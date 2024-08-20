@@ -20,10 +20,9 @@ default_album_fmt = '$id $albumartist $album $year $genre $mb_albumid'
 
 def cmd_tablelist( lib: Library, opts: Values, args, config ):
     query = decargs( args )
-    results = lib.albums( query=query ) if opts.album else lib.items( query=query )
-    use_album_format = True if opts.album else False
+    results = lib.albums( query ) if opts.album else lib.items( query )
 
-    table = make_table( results, config, use_album_format )
+    table = make_table( results, config, use_album_format=opts.album )
     console.print( table )
 
 def make_style( config: Configuration ) -> dict:
@@ -48,12 +47,13 @@ def make_table( results: Results, config: Configuration, use_album_format: bool 
     fields = [ f for f in fields.split() ]
     fields_tmpl = [ '${}'.format( f ) for f in fields ]
 
+    # add header
     if table_style['show_header']:
         [ table.add_column( c ) for c in fields ]
 
+    # make actual table
     for r in results:
-        evaluated_field_list = [ r.evaluate_template( tmpl ) for tmpl in fields_tmpl ]
-        table.add_row( *evaluated_field_list )
+        table.add_row( *[ r.evaluate_template( tmpl ) for tmpl in fields_tmpl ] )
 
     return table
 
