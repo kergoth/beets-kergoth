@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - open: add new plugin. This adds a command to open items with the appropriate platform-specific method, such as `xdg-open` on Linux, or `open` on macOS.
 - pathfield: add new plugin. By default, field expansion in a path format will replace any `/` characters, to ensure that the field only affects a single path component, rather than adding new subdirectories. This plugin allows you to work around that if you want to do otherwise, through substitution and two template functions.
 - replacefunc: add new plugin. This is intended as a more convenience replaceformat.
+- tablelist: add new plugin. This plugin is a replacement for the built-in list command which displays items in a table format.
 
 ### Removed
 
