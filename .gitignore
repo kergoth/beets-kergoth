@@ -20,3 +20,9 @@ poetry.lock
 
 # ignore PyCharm config
 /.idea/
+
+# ignore virtual environments
+venv
+
+# everything in var
+var
