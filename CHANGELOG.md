@@ -7,9 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Removed modifytmpl plugin. Beets now has support for formats with modify.
-- Updated for beets 2.0 changes.
+### Added
+
 - alias: also pull from a toplevel aliases section of the config.
+- alias: parameter expansion support, thanks to fortysix2ahead!
+- defaultformats: add new plugin. This stores the `item_format` and `album_format` as fields, which lets you extend the default formats at the command-line, rather than having to duplicate them. For example, `beet ls -f '$item_format | $genre'`.
+- hookscripts: add new plugin. This just eases execution of external scripts based on hooks. I don't know if I'll be keeping this one in the long term.
+- inlinehook: allow extension of argspecs in the config, to support custom plugin events.
+- open: add new plugin. This adds a command to open items with the appropriate platform-specific method, such as `xdg-open` on Linux, or `open` on macOS.
+- pathfield: add new plugin. By default, field expansion in a path format will replace any `/` characters, to ensure that the field only affects a single path component, rather than adding new subdirectories. This plugin allows you to work around that if you want to do otherwise, through substitution and two template functions.
+- replacefunc: add new plugin. This is intended as a more convenience replaceformat.
+
+### Removed
+
+- modifytmpl: remove this plugin. beets modify supports format strings natively now.
+
+### Changed
+
+- Add caching in a few places for a minor performance improvement
+- last_import: also add to album items
+- spotifyexplicit: rework as a spotify-set-advisory command
+
+### Fixed
+
+- A variety of very minor and cosmetic fixes
+- Fixed compatibility issues with beets 2.0
+- Various minor fixes for the tests
 
 ## [0.4.0] - 2019-11-21
 
@@ -24,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added prototype crossquery plugin
 - modifyonimport: added configuration sanity checks
 - modifytmpl: added up front checks for common user mistakes in field changes
+- spotifyexplicit: send an event for each explicit track
 
 ### Changed
 
