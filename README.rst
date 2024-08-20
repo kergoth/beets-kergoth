@@ -23,7 +23,7 @@ projects / python packages.
 - The `Saved Formats Plugin`_ lets you define saved, named format strings by
   storing them in fields for later reference.
 - The `Saved Queries Plugin`_ lets you save queries by name for later use.
-- The `Tablelist Plugin`_ lets you save queries by name for later use.
+- The `Tablelist Plugin`_ lists items in a table format, as an alternative to list.
 
 Special Purpose
 ---------------
