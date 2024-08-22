@@ -37,6 +37,9 @@ else:
     import collections as abc
 
 
+EXIT_STATUS_DATABASE_CHANGED = 8
+
+
 class NoOpOptionParser(optparse.OptionParser):
     def parse_args(self, args=None, namespace=None):
         if args is None:
@@ -126,6 +129,15 @@ class AliasCommand(Subcommand):
         plugins.send('alias_succeeded', lib=lib, alias=self.alias, command=command, args=args)
 
     def failed(self, lib, alias, command, args, exitcode=None, message=""):
+        if exitcode == EXIT_STATUS_DATABASE_CHANGED:
+            if self.log:
+                self.log.debug(u'command `{0}` exited with {1}, triggering database change event',
+                               command, exitcode)
+            plugins.send('database_change', lib=lib, model=None)
+        else:
+            if self.log:
+                self.log.debug(u'command `{0}` failed with {1}', command, exitcode)
+
         plugins.send(
             "alias_failed",
             lib=lib,
@@ -181,7 +193,7 @@ class AliasPlugin(BeetsPlugin):
         for path, subview in [('alias.aliases', self.config['aliases']), ('aliases', config['aliases'])]:
             for alias in subview.keys():
                 if alias in commands:
-                    raise confuse.ConfigError(u'alias {1} was specified multiple times'.format(alias))
+                    raise confuse.ConfigError(u'alias {0} was specified multiple times'.format(alias))
 
                 command = subview[alias].get()
                 if isinstance(command, six.text_type):
