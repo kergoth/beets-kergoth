@@ -9,12 +9,19 @@ from beets.plugins import BeetsPlugin
 
 
 class SavedQuery(Query):
+    """
+    A query that is saved by name and can be referenced by that name.
+    """
     queries = None
-    def __new__(cls, name):
+    def __new__(cls, keyword, name, *args):
         return cls.queries[name]
 
 
 class FactoryDict(dict):
+    """
+    A dictionary that creates missing values by calling a factory function
+    with the key as an argument.
+    """
     def __init__(self, factory, iterable=None, **kwargs):
         if iterable is not None:
             super().__init__(iterable)
