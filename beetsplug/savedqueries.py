@@ -80,10 +80,10 @@ class SavedQueriesPlugin(BeetsPlugin):
                 self.album_template_fields[name] = lambda album, name=name: self.album_query_objects[name].match(album)
 
     def parse_item_query(self, name):
-        if name not in config['item_queries']:
-            # Fall back to album
-            if name in config['album_queries']:
+        if not config['item_queries'][name].exists():
+            if config['album_queries'][name].exists():
                 return self.parse_album_query(name)
+
         querystring = config['item_queries'][name].as_str()
         query, _ = parse_query_string(querystring, Item)
         return query
