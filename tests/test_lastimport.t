@@ -16,6 +16,7 @@ Test with album
   $ beet ls
   Anar Software LLC - Blank Audio - 250 Milliseconds of Silence
   $ beet last-import
+  [^ ]+ [^ ]+ Anar Software LLC - Blank Audio - 250 Milliseconds of Silence (re)
   $ beet last-import -a
   [^ ]+ [^ ]+ Anar Software LLC - Blank Audio (re)
   $ beet ls -a -f '$last_import'
@@ -30,4 +31,4 @@ Test with singleton
   $ beet last-import
   [^ ]+ [^ ]+ Anar Software LLC - Blank Audio - 250 Milliseconds of Silence (re)
   $ beet ls -f '$last_import'
-  1
+  True
