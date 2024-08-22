@@ -24,12 +24,12 @@ class InconsistentAlbumTracks(BeetsPlugin):
             u'inconsistent-album-tracks', help=u'Identify albums whose tracks have inconsistent album fields.'
         )
         cmd.parser.add_option(
-            '-i', '--include-fields', default=[],
+            '-i', '--include-fields', default=self.config['included_fields'].as_str_seq(),
             action='append', metavar='FIELD', dest='included_fields',
             help='comma separated list of fields to show',
         )
         cmd.parser.add_option(
-            '-x', '--exclude-fields', default=[],
+            '-x', '--exclude-fields', default=self.config['ignored_fields'].as_str_seq(),
             action='append', metavar='FIELD', dest='ignored_fields',
             help='comma separated list of fields to exclude/ignore',
         )
@@ -37,13 +37,13 @@ class InconsistentAlbumTracks(BeetsPlugin):
         return [cmd]
 
     def set_fields(self):
-        self.ignored_fields = set(self.config['ignored_fields'].get())
+        self.ignored_fields = set(self.config['ignored_fields'].as_str_seq())
         if '' in self.ignored_fields:
             self.ignored_fields.clear()
 
         self.album_fields = set(Album.item_keys) - self.ignored_fields
         self.included_fields = set()
-        for fields in self.config['included_fields'].get():
+        for fields in self.config['included_fields'].as_str_seq():
             fields = fields.split(',')
             if '' in fields or not fields:
                 self.included_fields.clear()
@@ -64,7 +64,7 @@ class InconsistentAlbumTracks(BeetsPlugin):
 
             for item in album_items:
                 for field in self.included_fields:
-                    if item[field] != album[field]:
+                    if item.get(field, with_album=False) != album[field]:
                         inconsistent_fields[field].append(item)
 
             for field in sorted(inconsistent_fields):
@@ -73,4 +73,11 @@ class InconsistentAlbumTracks(BeetsPlugin):
                     print_(u'{}: field `{}` has album value `{}` but all track values are `{}`'.format(album, field, album[field], items[0][field]))
                 else:
                     for item in items:
-                        print_(u'{}: field `{}` has value `{}` but album value is `{}`'.format(item, field, item[field], album[field]))
+                        print_(
+                            "{}: field `{}` has value `{}` but album value is `{}`".format(
+                                item,
+                                field,
+                                item.get(field, with_album=False),
+                                album[field],
+                            )
+                        )
