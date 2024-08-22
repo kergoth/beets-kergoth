@@ -193,7 +193,7 @@ class AliasPlugin(BeetsPlugin):
         for path, subview in [('alias.aliases', self.config['aliases']), ('aliases', config['aliases'])]:
             for alias in subview.keys():
                 if alias in commands:
-                    raise confuse.ConfigError(u'alias {1} was specified multiple times'.format(alias))
+                    raise confuse.ConfigError(u'alias {0} was specified multiple times'.format(alias))
 
                 command = subview[alias].get()
                 if isinstance(command, six.text_type):
