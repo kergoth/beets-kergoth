@@ -106,7 +106,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
 
         # Gather up the items in the playlist and map to the alternative
         m3ubase, _ = os.path.splitext(m3uname)
-        query = playlist.PlaylistQuery(beets.util.as_string(m3ubase))
+        query = playlist.PlaylistQuery('playlist', beets.util.as_string(m3ubase), False)
         pathmap = {}
         for item in lib.items(query):
             alt_path = item.get(u'alt.{}'.format(alternative))
