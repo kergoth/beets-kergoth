@@ -53,9 +53,11 @@ class SavedQueriesPlugin(BeetsPlugin):
 
         class ItemSavedQuery(SavedQuery):
             queries = self.item_query_objects
+        self.item_query = ItemSavedQuery
 
         class AlbumSavedQuery(SavedQuery):
             queries = self.album_query_objects
+        self.album_query = AlbumSavedQuery
 
         self._log.debug('adding named item query `query`')
         self.item_queries = {'query': ItemSavedQuery}
