@@ -23,7 +23,7 @@ class SpotifyExplicitPlugin(plugins.BeetsPlugin):
             items = lib.items(args)
             results, failures = self.query_spotify(items)
             if results:
-                modify_items, modify_albums = defaultdict(set), set()
+                modify_items, modify_albums = defaultdict(dict), {}
 
                 if failures:
                     self._log.warning(
@@ -41,18 +41,22 @@ class SpotifyExplicitPlugin(plugins.BeetsPlugin):
                         # Trust that the clean advisory is accurate
                         continue
 
-                    modify_items[advisory].add(item)
+                    modify_items[advisory][item.id] = item
                     if advisory == 1 and item.album and item._cached_album:
                         # FIXME: implement removal of albumadvisory if not explicit for this or other tracks
                         album = item._cached_album
-                        modify_albums.add(album)
+                        modify_albums[album.id] = album
 
                 for advisory, mod_items in modify_items.items():
-                    modify_objs(lib, {'advisory': advisory}, None, mod_items, ui.should_write(opts.write),
+                    if advisory:
+                        mods, dels = {'advisory': advisory}, None
+                    else:
+                        mods, dels = None, ['advisory']
+                    modify_objs(lib, mods, dels, mod_items.values(), ui.should_write(opts.write),
                                 ui.should_move(opts.move), opts.pretend, False, not opts.yes)
 
                 if modify_albums:
-                    modify_objs(lib, {'albumadvisory': 1}, None, modify_albums, ui.should_write(opts.write),
+                    modify_objs(lib, {'albumadvisory': 1}, None, modify_albums.values(), ui.should_write(opts.write),
                                 ui.should_move(opts.move), opts.pretend, True, not opts.yes)
 
         cmd = ui.Subcommand(
@@ -155,6 +159,8 @@ class SpotifyExplicitPlugin(plugins.BeetsPlugin):
 
 def modify_objs(lib, mods, dels, objs, write, move, pretend, album, confirm):
     model_cls = library.Album if album else library.Item
+    if mods is None:
+        mods = {}
     if dels is None:
         dels = tuple()
 
