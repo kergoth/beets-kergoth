@@ -34,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - A variety of very minor and cosmetic fixes
 - Fixed compatibility issues with beets 2.0
 - Various minor fixes for the tests
+- importinspect: ensure consistent field display order. This ensures the tests don't fail due to undefined field ordering issues.
 
 ## [0.4.0] - 2019-11-21
 

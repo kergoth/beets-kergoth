@@ -10,7 +10,7 @@ from __future__ import division, absolute_import, print_function
 from beets import autotag, config, importer, library, ui
 from beets.plugins import BeetsPlugin
 from beets.ui.commands import PromptChoice
-from beets.ui import show_model_changes
+from beets.ui import _field_diff, colorize, print_
 
 
 def new_item(i):
@@ -131,3 +131,55 @@ class ImportInspectPlugin(BeetsPlugin):
             if key not in ignored and key not in self.ignored:
                 compare_fields.append(key)
         return compare_fields
+
+
+def show_model_changes(new, old=None, fields=None, always=False):
+    """Given a Model object, print a list of changes from its pristine
+    version stored in the database. Return a boolean indicating whether
+    any changes were found.
+
+    `old` may be the "original" object to avoid using the pristine
+    version from the database. `fields` may be a list of fields to
+    restrict the detection to. `always` indicates whether the object is
+    always identified, regardless of whether any changes are present.
+
+    Altered from default to sort fields and return a boolean indicating
+    whether any changes were found.
+
+    TODO: alter the field sort order to match the order in the model class.
+    """
+    old = old or new._db._get(type(new), new.id)
+
+    # Keep the formatted views around instead of re-creating them in each
+    # iteration step
+    old_fmt = old.formatted()
+    new_fmt = new.formatted()
+
+    # Build up lines showing changed fields.
+    changes = []
+    for field in sorted(old):
+        # Subset of the fields. Never show mtime.
+        if field == "mtime" or (fields and field not in fields):
+            continue
+
+        # Detect and show difference for this field.
+        line = _field_diff(field, old, old_fmt, new, new_fmt)
+        if line:
+            changes.append(f"  {field}: {line}")
+
+    # New fields.
+    for field in sorted(set(new) - set(old)):
+        if fields and field not in fields:
+            continue
+
+        changes.append(
+            "  {}: {}".format(field, colorize("text_highlight", new_fmt[field]))
+        )
+
+    # Print changes.
+    if changes or always:
+        print_(format(old))
+    if changes:
+        print_("\n".join(changes))
+
+    return bool(changes)
