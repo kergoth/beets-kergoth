@@ -1,6 +1,7 @@
 """Run external scripts when beets events are fired."""
 
 from __future__ import division, absolute_import, print_function
+import abc
 import collections
 
 import glob
@@ -101,7 +102,7 @@ class HookScriptsPlugin(BeetsPlugin):
 
 def flatten(l):
     for el in l:
-        if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
+        if isinstance(el, collections.abc.Iterable) and not isinstance(el, (str, bytes)):
             yield from el
         else:
             yield el
