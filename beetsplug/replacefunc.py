@@ -33,6 +33,9 @@ class ReplaceFuncPlugin(BeetsPlugin):
         super().__init__()
         self.template_funcs["replace"] = self.replace
         self.replacements = {}
+        self.flags = 0
+        if self.config["ignore_case"].get(False):
+            self.flags |= re.IGNORECASE
 
     def replace(self, field, path):
         if field in self.replacements:
@@ -40,7 +43,7 @@ class ReplaceFuncPlugin(BeetsPlugin):
         else:
             try:
                 replacements = self.replacements[field] = get_replacements(
-                    self.config[field]
+                    self.config[field], self.flags
                 )
             except confuse.ConfigError as exc:
                 raise UserError(
@@ -51,11 +54,11 @@ class ReplaceFuncPlugin(BeetsPlugin):
 
 
 # Copied with tweak from beets itself
-def get_replacements(config):
+def get_replacements(config, flags: re._FlagsType=0):
     replacements = []
     for pattern, repl in config.get(dict).items():
         try:
-            replacements.append((re.compile(pattern), repl or ""))
+            replacements.append((re.compile(pattern, flags), repl or ""))
         except re.error as exc:
             raise UserError(f"error compiling regex `{pattern}`: {exc}")
     return replacements
