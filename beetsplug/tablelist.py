@@ -21,7 +21,7 @@ def cmd_tablelist(lib: Library, opts: Values, args, config):
     query = decargs(args)
     results = lib.albums(query) if opts.album else lib.items(query)
 
-    table = make_table(results, config, use_album_format=opts.album)
+    table = make_table(results, config, use_album_format=opts.album, use_path=opts.path)
     console.print(table)
 
 
@@ -41,42 +41,49 @@ def make_style(config: Configuration) -> dict:
 
 
 def make_table(
-    results: Results, config: Configuration, use_album_format: bool = False
+    results: Results,
+    config: Configuration,
+    use_album_format: bool = False,
+    use_path: bool = False,
 ) -> Table:
     table_style = make_style(config)
     table = Table(**table_style)
 
-    fields = (
-        config["album_columns"].get(str)
-        if use_album_format
-        else config["item_columns"].get(str)
-    )
-    fields = [f for f in fields.split()]
-    fields_tmpl = ["${}".format(f) for f in fields]
+    if use_path:
+        table.add_column("path")
+        [table.add_row(format(r)) for r in results]
+    else:
+        fields = (
+            config["album_columns"].get(str)
+            if use_album_format
+            else config["item_columns"].get(str)
+        )
+        fields = [f for f in fields.split()]
+        fields_tmpl = ["${}".format(f) for f in fields]
 
-    # add header
-    if table_style["show_header"]:
-        if use_album_format:
-            cfg = config["album_heading"]
-        else:
-            cfg = config["item_heading"]
+        # add header
+        if table_style["show_header"]:
+            if use_album_format:
+                cfg = config["album_heading"]
+            else:
+                cfg = config["item_heading"]
 
-        if cfg.exists():
-            heading = cfg.as_str_seq()
-            if len(heading) != len(fields):
-                prefix = "album_" if use_album_format else "item_"
-                raise ConfigError(
-                    f"{prefix}columns and {prefix}heading must have the same number of elements"
-                )
-            [table.add_column(c) for c in heading]
-        else:
-            [table.add_column(c) for c in fields]
+            if cfg.exists():
+                heading = cfg.as_str_seq()
+                if len(heading) != len(fields):
+                    prefix = "album_" if use_album_format else "item_"
+                    raise ConfigError(
+                        f"{prefix}columns and {prefix}heading must have the same number of elements"
+                    )
+                [table.add_column(c) for c in heading]
+            else:
+                [table.add_column(c) for c in fields]
 
-    # make actual table
-    [
-        table.add_row(*[r.evaluate_template(tmpl) for tmpl in fields_tmpl])
-        for r in results
-    ]
+        # make actual table
+        [
+            table.add_row(*[r.evaluate_template(tmpl) for tmpl in fields_tmpl])
+            for r in results
+        ]
 
     return table
 
@@ -100,5 +107,6 @@ class TableListPlugin(BeetsPlugin):
     def commands(self):
         cmd = Subcommand("tablelist", help="lists items in a table", aliases="tls")
         cmd.parser.add_album_option()
+        cmd.parser.add_path_option()
         cmd.func = lambda lib, opts, args: cmd_tablelist(lib, opts, args, self.config)
         return [cmd]
