@@ -99,6 +99,6 @@ class TableListPlugin(BeetsPlugin):
 
     def commands(self):
         cmd = Subcommand("tablelist", help="lists items in a table", aliases="tls")
-        cmd.parser.add_all_common_options()
+        cmd.parser.add_album_option()
         cmd.func = lambda lib, opts, args: cmd_tablelist(lib, opts, args, self.config)
         return [cmd]
