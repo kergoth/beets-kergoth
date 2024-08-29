@@ -54,7 +54,7 @@ class ReplaceFuncPlugin(BeetsPlugin):
 
 
 # Copied with tweak from beets itself
-def get_replacements(config, flags: re._FlagsType=0):
+def get_replacements(config, flags=0):
     replacements = []
     for pattern, repl in config.get(dict).items():
         try:
