@@ -41,7 +41,7 @@ class SavedFormatsPlugin(BeetsPlugin):
 
     def dirty_item(self, item):
         cache = self.cache[item.__class__]
-        if item.id and item.id in cache:
+        if item.id is not None and item.id in cache:
             del cache[item.id]
 
     def set_template_fields(self):
@@ -59,14 +59,18 @@ class SavedFormatsPlugin(BeetsPlugin):
                     # I would like to pre-determine the field types up front,
                     # but there's no event that's fired after the plugin queries
                     # and fields are merged, so we wait until first use instead.
-                    if item.id in self.cache:
-                        if field in self.cache[item.id]:
-                            return self.cache[item.id][field]
+                    cache = self.cache[item.__class__]
+                    if (
+                        item.id is not None
+                        and item.id in cache
+                        and field in cache[item.id]
+                    ):
+                        return cache[item.id][field]
 
                     field_type = item._type(field)
-                    value = self.cache[item.id][field] = field_type.parse(
-                        item.evaluate_template(template)
-                    )
+                    value = field_type.parse(item.evaluate_template(template))
+                    if item.id is not None:
+                        cache[item.id] = value
                     return value
 
                 fields = getattr(self, fieldsname)
