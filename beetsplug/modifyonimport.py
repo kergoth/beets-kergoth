@@ -35,7 +35,7 @@ class ModifyOnImport(BeetsPlugin):
         self.album_item_modifies = []
         for albumquery, itemmodifies in self.config['modify_album_items'].items():
             albumdbquery, _ = parse_query_string(util.as_string(albumquery), Album)
-            modifies = self.get_modifies(itemmodifies.items(), Item, u'modify_album_items.{0}'.format(albumquery))
+            modifies = self.get_modifies(itemmodifies.items(), Item, f'modify_album_items.{albumquery}')
             self.album_item_modifies.append((albumdbquery, modifies))
 
     def get_modifies(self, items, model_cls, context):
@@ -44,9 +44,9 @@ class ModifyOnImport(BeetsPlugin):
             modify = modify.as_str()
             mod_query, mods, dels = self.parse_modify(modify, model_cls)
             if mod_query:
-                raise ui.UserError(u'modifyonimport.{0}["{1}"]: unexpected query `{2}` in value'.format(context, query, mod_query))
+                raise ui.UserError(f'modifyonimport.{context}["{query}"]: unexpected query `{mod_query}` in value')
             elif not mods and not dels:
-                raise ui.UserError(u'modifyonimport.{0}["{1}"]: no modifications found'.format(context, query))
+                raise ui.UserError(f'modifyonimport.{context}["{query}"]: no modifications found')
             dbquery, _ = parse_query_string(util.as_string(query), model_cls)
             modifies.append((dbquery, mods, dels))
         return modifies

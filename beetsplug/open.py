@@ -53,9 +53,9 @@ class OpenPlugin(plugins.BeetsPlugin):
             action = "Revealing"
         else:
             action = "Opening"
-        ui.print_("{} {} {}.".format(action, len(items), item_type))
+        ui.print_(f"{action} {len(items)} {item_type}.")
 
         try:
             util.interactive_open(paths, cmd)
         except OSError as exc:
-            raise ui.UserError("failed to invoke {}: {}".format(cmd, exc))
+            raise ui.UserError(f"failed to invoke {cmd}: {exc}")

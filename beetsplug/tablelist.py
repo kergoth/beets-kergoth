@@ -64,7 +64,7 @@ def make_table(
             else config["item_columns"].get(str)
         )
         fields = [f for f in fields.split()]
-    fields_tmpl = ["${}".format(f) for f in fields]
+    fields_tmpl = [f"${f}" for f in fields]
 
     # add header
     if table_style["show_header"]:

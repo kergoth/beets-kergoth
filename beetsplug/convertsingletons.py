@@ -24,12 +24,12 @@ class ConvertSingletonsPlugin(BeetsPlugin):
             for item in self.to_convert:
                 if item.album_id not in albums:
                     albums[item.album_id] = item.get_album()
-                self._log.info('converted {0} to a singleton'.format(item))
+                self._log.info(f'converted {item} to a singleton')
                 item.album_id = None
                 item.store()
 
         with lib.transaction():
             for album in albums.values():
                 if not album.items():
-                    self._log.info('removed remnant empty album {0} due to conversions to singleton'.format(album.id))
+                    self._log.info(f'removed remnant empty album {album.id} due to conversions to singleton')
                     album.remove(with_items=False)

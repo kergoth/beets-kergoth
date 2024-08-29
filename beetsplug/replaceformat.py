@@ -77,7 +77,7 @@ class ReplacePlugin(BeetsPlugin):
         try:
             return pattern.sub(repl, string)
         except re.error as exc:
-            raise UserError(u'%sub: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
+            raise UserError(f'%sub: error compiling regex `{pattern}`: {str(exc)}')
 
     def sub_path(self, path, pattern, repl=''):
         if pattern in self.patterns:
@@ -88,7 +88,7 @@ class ReplacePlugin(BeetsPlugin):
         try:
             return util.sanitize_path(path, [(pattern, repl)])
         except re.error as exc:
-            raise UserError(u'%sub_path: error compiling regex `{0}`: {1}'.format(pattern, str(exc)))
+            raise UserError(f'%sub_path: error compiling regex `{pattern}`: {str(exc)}')
 
 
 # Copied with tweak from beets itself
@@ -99,5 +99,5 @@ def get_replacements(config_path):
         try:
             replacements.append((re.compile(pattern), repl or ''))
         except re.error as exc:
-            raise confuse.ConfigError(u'{0}: error compiling regex `{1}`: {2}'.format(config_path, pattern, str(exc)))
+            raise confuse.ConfigError(f'{config_path}: error compiling regex `{pattern}`: {str(exc)}')
     return replacements

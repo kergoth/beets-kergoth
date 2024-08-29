@@ -102,7 +102,7 @@ class AliasCommand(Subcommand):
                 if cmdname == subcommand.name or cmdname in subcommand.aliases:
                     break
             else:
-                raise ui.UserError(u"unknown command '{0}'".format(cmdname))
+                raise ui.UserError(f"unknown command '{cmdname}'")
 
             suboptions, subargs = subcommand.parse_args(argv[1:])
             def run_func():
@@ -148,7 +148,7 @@ class AliasCommand(Subcommand):
             message=message
         )
         if self.log:
-            exitmsg = " with {}".format(exitcode) if exitcode else ""
+            exitmsg = f" with {exitcode}" if exitcode else ""
             if message:
                 message = ": " + message
             self.log.debug(u'command `{}{}` failed{}{}', command, ' ' + subprocess.list2cmdline(args) if args else '', exitmsg, message)
@@ -176,12 +176,12 @@ class AliasPlugin(BeetsPlugin):
                 if os.access(cmd, os.X_OK):
                     command = os.path.basename(cmd)
                     alias = command[5:]
-                    yield (alias, self.get_command(alias, '!' + command, u'Run external command `{0}`'.format(command)))
+                    yield (alias, self.get_command(alias, '!' + command, f'Run external command `{command}`'))
 
     def cmd_alias(self, lib, opts, args, commands):
         """Print the available alias commands."""
         for alias, command in sorted(commands.items()):
-            print_(u'{0}: {1}'.format(alias, command))
+            print_(f'{alias}: {command}')
 
     def commands(self):
         """Add the alias commands."""
@@ -193,7 +193,7 @@ class AliasPlugin(BeetsPlugin):
         for path, subview in [('alias.aliases', self.config['aliases']), ('aliases', config['aliases'])]:
             for alias in subview.keys():
                 if alias in commands:
-                    raise confuse.ConfigError(u'alias {0} was specified multiple times'.format(alias))
+                    raise confuse.ConfigError(f'alias {alias} was specified multiple times')
 
                 command = subview[alias].get()
                 if isinstance(command, six.text_type):
@@ -201,11 +201,11 @@ class AliasPlugin(BeetsPlugin):
                 elif isinstance(command, abc.Mapping):
                     command_text = command.get('command')
                     if not command_text:
-                        raise confuse.ConfigError(u'{0}.{1}.command not found'.format(path, alias))
+                        raise confuse.ConfigError(f'{path}.{alias}.command not found')
                     help_text = command.get('help', command_text)
                     commands[alias] = self.get_command(alias, command_text, help_text)
                 else:
-                    raise confuse.ConfigError(u'{0}.{1} must be a string or single-element mapping'.format(path, alias))
+                    raise confuse.ConfigError(f'{path}.{alias} must be a string or single-element mapping')
 
         if 'alias' in commands:
             raise ui.UserError(u'alias `alias` is reserved for the alias plugin')

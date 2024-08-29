@@ -63,7 +63,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                 'playlist plugin is required for alternativesplaylist')
 
     def write_playlists(self, alternative, lib):
-        self._log.debug('alternativesplaylist: write_playlists(%s)' % alternative)
+        self._log.debug(f'alternativesplaylist: write_playlists({alternative})')
         for m3u in self.find_playlists():
             try:
                 self.update_playlist(lib, alternative, m3u)
@@ -101,15 +101,14 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         m3uname = os.path.relpath(m3u, playlist_dir)
 
         outm3u = os.path.join(self.playlist_dir(alternative, alt_dir), m3uname)
-        self._log.info('Writing playlist {}'.format(
-            beets.util.displayable_path(outm3u)))
+        self._log.info(f'Writing playlist {beets.util.displayable_path(outm3u)}')
 
         # Gather up the items in the playlist and map to the alternative
         m3ubase, _ = os.path.splitext(m3uname)
         query = playlist.PlaylistQuery('playlist', beets.util.as_string(m3ubase), False)
         pathmap = {}
         for item in lib.items(query):
-            alt_path = item.get(u'alt.{}'.format(alternative))
+            alt_path = item.get(f'alt.{alternative}')
             if alt_path:
                 pathmap[beets.util.bytestring_path(item.path)] = beets.util.bytestring_path(alt_path)
 
@@ -168,8 +167,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         try:
             alt = self.alternatives.alternative(options.name, lib)
         except KeyError as e:
-            raise beets.ui.UserError(u"Alternative collection '{0}' not found."
-                                     .format(e.args[0]))
+            raise beets.ui.UserError(f"Alternative collection '{e.args[0]}' not found.")
         beets.plugins.send('alternatives_before_update', alternative=alt, lib=lib)
         alt.update(create=options.create)
         beets.plugins.send('alternatives_after_update', alternative=alt, lib=lib)

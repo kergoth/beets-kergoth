@@ -16,11 +16,11 @@ class NoWritePlugin(BeetsPlugin):
 
         # Monkeypatch!
         def nowrite(self, path=None, tags=None, id3v23=None):
-            plugin._log.info(u'Ignoring attempt to write {0}'.format(displayable_path(self.path)))
+            plugin._log.info(f'Ignoring attempt to write {displayable_path(self.path)}')
 
         def nomove(self, operation=MoveOperation.MOVE, basedir=None,
                    with_album=True, store=True):
-            plugin._log.info(u'Ignoring attempt to move {0}'.format(displayable_path(self.path)))
+            plugin._log.info(f'Ignoring attempt to move {displayable_path(self.path)}')
 
         Item.write = nowrite
         Item.move = nomove

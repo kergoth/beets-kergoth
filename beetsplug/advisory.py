@@ -77,7 +77,7 @@ class iTunesAdvisoryPlugin(BeetsPlugin):
         query = decargs(args)
         items, _ = _do_query(lib, query, None, False)
         if not items:
-            print_(u'No items matched the specified query: {0}.'.format(' '.join(query)))
+            print_(f"No items matched the specified query: {' '.join(query)}.")
             return
         self.read_items(lib, items, pretend=opts.pretend)
 

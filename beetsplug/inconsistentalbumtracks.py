@@ -70,7 +70,7 @@ class InconsistentAlbumTracks(BeetsPlugin):
             for field in sorted(inconsistent_fields):
                 items = inconsistent_fields[field]
                 if len(items) == len(album_items):
-                    print_(u'{}: field `{}` has album value `{}` but all track values are `{}`'.format(album, field, album[field], items[0][field]))
+                    print_(f'{album}: field `{field}` has album value `{album[field]}` but all track values are `{items[0][field]}`')
                 else:
                     for item in items:
                         print_(

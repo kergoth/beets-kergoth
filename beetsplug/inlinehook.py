@@ -39,9 +39,7 @@ def compile_func(source, name, argspec='', filename='<string>', lineoffset=0,
     code = source.rstrip().replace('\t', '    ')
     lines = ('    ' + line for line in code.split('\n'))
     code = '\n'.join(lines)
-    defined = 'def {name}({argspec}):\n{body}'.format(name=name,
-                                                      argspec=argspec,
-                                                      body=code)
+    defined = f'def {name}({argspec}):\n{code}'
     compiled = compile_offset(defined, filename, lineoffset)
 
     if env is None:
@@ -97,7 +95,7 @@ class InlineHookPlugin(BeetsPlugin):
             hook = self.config['hooks'][hook_index]
             event = hook['event'].as_str()
             if event not in self.argspecs:
-                raise confuse.ConfigError('inline_hook.hooks[{0}].event: `{1}` is not a handled event'.format(hook_index, event))
+                raise confuse.ConfigError(f'inline_hook.hooks[{hook_index}].event: `{event}` is not a handled event')
             handler = hook['handler'].as_str()
             function = compile_func(handler, 'inline_hook_' + event, self.argspecs.get(event) or '')
             self.register_listener(event, function)

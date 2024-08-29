@@ -166,8 +166,7 @@ def modify_objs(lib, mods, dels, objs, write, move, pretend, album, confirm):
 
     # Apply changes *temporarily*, preview them, and collect modified
     # objects.
-    ui.print_(u'Modifying {0} {1}s.'
-            .format(len(objs), u'album' if album else u'item'))
+    ui.print_(f"Modifying {len(objs)} {u'album' if album else u'item'}s.")
     changed = []
     for obj in objs:
         obj_mods = {}
@@ -198,7 +197,7 @@ def modify_objs(lib, mods, dels, objs, write, move, pretend, album, confirm):
             extra = u''
 
         changed = ui.input_select_objects(
-            u'Really modify%s' % extra, changed,
+            f'Really modify{extra}', changed,
             lambda o: commands.print_and_modify(o, mods, dels)
         )
 

@@ -38,8 +38,7 @@ class ABCalcPlugin(BeetsPlugin):
             # Expicit path to extractor
             if not os.path.isfile(self.extractor):
                 raise ui.UserError(
-                    u'Extractor command does not exist: {0}.'.
-                    format(self.extractor)
+                    f'Extractor command does not exist: {self.extractor}.'
                 )
         else:
             # Implicit path to extractor, search for it in path
