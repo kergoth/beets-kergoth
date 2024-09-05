@@ -1,14 +1,15 @@
 from optparse import Values
 from typing import Optional
 
-from beets.dbcore.db import Results
-from beets.library import Library
-from beets.plugins import BeetsPlugin
-from beets.ui import Subcommand, decargs
 from confuse import ConfigError, Configuration
 from rich import box
 from rich.console import Console
 from rich.table import Table
+
+from beets.dbcore.db import Results
+from beets.library import Library
+from beets.plugins import BeetsPlugin
+from beets.ui import Subcommand, decargs
 
 # from shlex import split
 
