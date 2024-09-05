@@ -173,7 +173,7 @@ def show_model_changes(new, old=None, fields=None, always=False):
             continue
 
         changes.append(
-            f"  {field}: {colorize('text_highlight', new_fmt[field])}"
+            f"  {field}: {colorize('text_diff_added', new_fmt[field])}"
         )
 
     # Print changes.
