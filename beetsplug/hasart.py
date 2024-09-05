@@ -1,11 +1,11 @@
 """Add a field to indicate whether an item/album has art embedded."""
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 from beets import art
-from beets.plugins import BeetsPlugin
 from beets.dbcore import types
 from beets.dbcore.query import FieldQuery
+from beets.plugins import BeetsPlugin
 
 
 class ItemArtQuery(FieldQuery):
