@@ -110,7 +110,7 @@ class TableListPlugin(BeetsPlugin):
         )
 
     def commands(self):
-        cmd = Subcommand("tablelist", help="lists items in a table", aliases="tls")
+        cmd = Subcommand("tablelist", help="lists items in a table", aliases=["tls"])
         cmd.parser.add_option("-c", "--columns", help="columns to display")
         cmd.parser.add_option(
             "-p",
