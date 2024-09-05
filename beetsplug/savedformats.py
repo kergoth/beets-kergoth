@@ -1,13 +1,13 @@
 """Define saved format strings by storing them in fields."""
 
-from __future__ import division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function
+
 from collections import defaultdict
 
 from beets import config
 from beets.library import Album
 from beets.plugins import BeetsPlugin
 from beets.util import functemplate
-from beets.dbcore import types
 
 
 class SavedFormatsPlugin(BeetsPlugin):
