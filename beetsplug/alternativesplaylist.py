@@ -145,6 +145,11 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
                         'Failed to map path {} in playlist {} for alt {}', srcpath, m3uname, alternative)
                     continue
 
+                newpath = beets.util.normpath(newpath)
+                if not os.path.exists(newpath):
+                    self._log.error('Path {} in playlist {} maps to non-existent path {}', srcpath, m3uname, newpath)
+                    continue
+
                 if is_relative or self.is_relative:
                     newpath = os.path.relpath(newpath, alt_base_dir)
 
