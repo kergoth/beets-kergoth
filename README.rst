@@ -15,6 +15,8 @@ projects / python packages.
   makes available any beet-prefixed commands in your ``PATH`` as well.
 - The `Import Inspect Plugin`_ lets you inspect the metadata changes to be
   applied when importing.
+- The `Genres Plugin`_ simply displays the genres of tracks or albums in
+  alphabetical order
 - The `Modify On Import Plugin`_ lets you define metadata changes to occur
   on import when the specified queries match.
 - The `Replace Format Plugin`_ defines format functions for search/replace of
@@ -84,6 +86,7 @@ cleaning up, but others are useful pretty rarely.
 .. _beets: http://beets.io/
 .. _Alias Plugin: docs/alias.rst
 .. _Import Inspect Plugin: docs/importinspect.rst
+.. _Genres Plugin: docs/genres.rst
 .. _Modify On Import Plugin: docs/modifyonimport.rst
 .. _Replace Format Plugin: docs/replaceformat.rst
 .. _Saved Formats Plugin: docs/savedformats.rst
