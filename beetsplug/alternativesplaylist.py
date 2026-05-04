@@ -51,7 +51,7 @@ class AlternativesPlaylistPlugin(beets.plugins.BeetsPlugin):
         for plugin in beets.plugins.find_plugins():
             if plugin.name == 'alternatives':
                 self.alternatives = plugin
-                self.alternatives.update = self.patch_alt_update
+                # self.alternatives.update = self.patch_alt_update
             elif plugin.name == 'playlist':
                 self.playlist = plugin
 

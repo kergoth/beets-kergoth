@@ -1,25 +1,17 @@
 from __future__ import division, absolute_import, print_function
 
-from beets import plugins
-from beets.autotag.hooks import AlbumInfo, TrackInfo, Distance
+from beets.autotag.hooks import AlbumInfo, TrackInfo
+from beets.metadata_plugins import MetadataSourcePlugin
 
 
-class MockedCandidatePlugin(plugins.BeetsPlugin):
+class MockedCandidatePlugin(MetadataSourcePlugin):
     def __init__(self):
         super(MockedCandidatePlugin, self).__init__()
-        self.config.add({
-            'source_weight': 0.5,
-        })
-
-    def album_distance(self, items, album_info, mapping):
-        dist = Distance()
-        if hasattr(album_info, 'data_source') and album_info.data_source == 'mocked_candidate':
-            dist.add('source', self.config['source_weight'].as_number())
-        return dist
+        self.config.add({'data_source_mismatch_penalty': 0.5})
 
     def get_track(self, artist=None):
         return TrackInfo(title=u'A Track', track_id=u'http://foo', length=1.0, artist=artist or u'An Artist',
-                         artist_id=1, data_source=u'mocked_candidate',
+                         artist_id=u'1', data_source=u'mocked_candidate',
                          medium=1, medium_index=1, medium_total=3,
                          media=u'Digital Media', data_url=u'http://foo')
 

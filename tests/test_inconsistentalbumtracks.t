@@ -45,8 +45,11 @@ Identify the inconsistent album title
 Test ignored_fields
 
   $ beet modify -yWa genre=Silence
+  The 'genre' field is deprecated and will be removed in version 3.0.0. Use 'genres' (separate values by '; ') instead.
   Modifying 1 albums.
   Anar Software LLC - Blank Audio
-    genre:  -> Silence
+    genres:
+      + Silence
   $ beet modify -yW id:2 album='Blank Audio' genre=inconsistent >/dev/null
+  The 'genre' field is deprecated and will be removed in version 3.0.0. Use 'genres' (separate values by '; ') instead.
   $ beet inconsistent-album-tracks

@@ -16,7 +16,8 @@ with a new import pass.
 
 from __future__ import division, absolute_import, print_function
 
-from beets import config, dbcore
+from beets import config
+from beets.dbcore.query import PathQuery
 from beets.util import displayable_path
 from beets.plugins import BeetsPlugin
 
@@ -48,7 +49,7 @@ class ReimportSkippedFieldsPlugin(BeetsPlugin):
             if not item.id:
                 # Same logic as used by `record_replaced` in `ImportTask` in beets.importer
                 old_items = list(session.lib.items(
-                    dbcore.query.BytesQuery('path', item.path)
+                    PathQuery('path', item.path)
                 ))
                 item = old_items[0]
 

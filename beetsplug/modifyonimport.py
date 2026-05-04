@@ -8,7 +8,7 @@ from beets import ui, util
 from beets.library import Album, Item, parse_query_string
 from beets.plugins import BeetsPlugin
 from beets.ui import decargs
-from beets.ui.commands import modify_parse_args, print_and_modify
+from beets.ui.commands.modify import modify_parse_args, print_and_modify
 
 
 class ModifyOnImport(BeetsPlugin):
@@ -54,7 +54,9 @@ class ModifyOnImport(BeetsPlugin):
     def parse_modify(self, modify, model_cls):
         modify = util.as_string(modify)
         args = shlex.split(modify)
-        query, mods, dels = modify_parse_args(decargs(args))
+        query, mods, dels = modify_parse_args(
+            decargs(args), is_album=(model_cls is Album)
+        )
         return ' '.join(query), mods, dels
 
     def imported(self, session, task):

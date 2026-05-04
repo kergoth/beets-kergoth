@@ -12,7 +12,7 @@ from beets.dbcore import types
 from beets.library import Item
 from beets.plugins import BeetsPlugin
 from beets.ui import Subcommand, show_model_changes, decargs, print_
-from beets.ui.commands import print_and_modify, _do_query
+from beets.ui.commands.modify import print_and_modify
 
 
 class iTunesAdvisoryPlugin(BeetsPlugin):
@@ -75,7 +75,7 @@ class iTunesAdvisoryPlugin(BeetsPlugin):
     def read_advisory(self, lib, opts, args):
         self.config.set_args(opts)
         query = decargs(args)
-        items, _ = _do_query(lib, query, None, False)
+        items = list(lib.items(query))
         if not items:
             print_(f"No items matched the specified query: {' '.join(query)}.")
             return

@@ -7,10 +7,11 @@ when timid.
 
 from __future__ import division, absolute_import, print_function
 
-from beets import autotag, config, importer, library, ui
+from beets import config, importer, library, ui
 from beets.plugins import BeetsPlugin
 from beets.ui.commands import PromptChoice
-from beets.ui import _field_diff, colorize, print_
+from beets.ui import print_
+from beets.util.diff import _field_diff
 
 
 def new_item(i):
@@ -90,7 +91,8 @@ class ImportInspectPlugin(BeetsPlugin):
         changes = False
         if task.is_album:
             newmapping = {new_item(item): track_info for item, track_info in match.mapping.items()}
-            autotag.apply_metadata(match.info, newmapping)
+            for item, track_info in newmapping.items():
+                item.update(track_info.merge_with_album(match.info))
 
             # olditems[0].get_album() isn't working, create our own to compare
             olditems = list(match.mapping.keys())
@@ -100,6 +102,7 @@ class ImportInspectPlugin(BeetsPlugin):
             newitems = list(newmapping.keys())
             values = dict((key, newitems[0][key]) for key in self.album_fields)
             album = library.Album(lib, **values)
+            album.update(match.info.item_data)
             compare_fields = self.get_fields(self.album_fields, oldvalues)
 
             album_changes = show_model_changes(album, oldalbum, compare_fields)
@@ -115,7 +118,7 @@ class ImportInspectPlugin(BeetsPlugin):
                     changes = True
         else:
             fakeitem = new_item(task.item)
-            autotag.apply_item_metadata(fakeitem, match.info)
+            fakeitem.update(match.info.item_data)
             compare_fields = self.get_fields(self.all_fields, task.item)
             changes = show_model_changes(fakeitem, task.item, compare_fields)
 
@@ -157,24 +160,15 @@ def show_model_changes(new, old=None, fields=None, always=False):
 
     # Build up lines showing changed fields.
     changes = []
-    for field in sorted(old):
+    for field in sorted(set(old) | set(new)):
         # Subset of the fields. Never show mtime.
         if field == "mtime" or (fields and field not in fields):
             continue
 
         # Detect and show difference for this field.
-        line = _field_diff(field, old, old_fmt, new, new_fmt)
+        line = _field_diff(field, old_fmt, new_fmt)
         if line:
-            changes.append(f"  {field}: {line}")
-
-    # New fields.
-    for field in sorted(set(new) - set(old)):
-        if fields and field not in fields:
-            continue
-
-        changes.append(
-            f"  {field}: {colorize('text_diff_added', new_fmt[field])}"
-        )
+            changes.append(f"  {line}")
 
     # Print changes.
     if changes or always:

@@ -11,6 +11,10 @@ from beets.ui import decargs, print_
 
 
 class InconsistentAlbumTracks(BeetsPlugin):
+    LEGACY_ALBUM_FIELDS = {
+        "genre": "genres",
+    }
+
     def __init__(self):
         super(InconsistentAlbumTracks, self).__init__()
 
@@ -18,6 +22,10 @@ class InconsistentAlbumTracks(BeetsPlugin):
             'ignored_fields': ['added'],
             'included_fields': ['*'],
         })
+
+    @classmethod
+    def normalize_album_field(cls, field):
+        return cls.LEGACY_ALBUM_FIELDS.get(field, field)
 
     def commands(self):
         cmd = ui.Subcommand(
@@ -37,14 +45,20 @@ class InconsistentAlbumTracks(BeetsPlugin):
         return [cmd]
 
     def set_fields(self):
-        self.ignored_fields = set(self.config['ignored_fields'].as_str_seq())
+        self.ignored_fields = {
+            self.normalize_album_field(field)
+            for field in self.config['ignored_fields'].as_str_seq()
+        }
         if '' in self.ignored_fields:
             self.ignored_fields.clear()
 
         self.album_fields = set(Album.item_keys) - self.ignored_fields
         self.included_fields = set()
         for fields in self.config['included_fields'].as_str_seq():
-            fields = fields.split(',')
+            fields = [
+                self.normalize_album_field(field.strip())
+                for field in fields.split(',')
+            ]
             if '' in fields or not fields:
                 self.included_fields.clear()
             elif '*' in fields:

@@ -22,7 +22,6 @@ import glob
 import optparse
 import os
 import shlex
-import six
 import subprocess
 import sys
 
@@ -134,9 +133,6 @@ class AliasCommand(Subcommand):
                 self.log.debug(u'command `{0}` exited with {1}, triggering database change event',
                                command, exitcode)
             plugins.send('database_change', lib=lib, model=None)
-        else:
-            if self.log:
-                self.log.debug(u'command `{0}` failed with {1}', command, exitcode)
 
         plugins.send(
             "alias_failed",
@@ -196,7 +192,7 @@ class AliasPlugin(BeetsPlugin):
                     raise confuse.ConfigError(f'alias {alias} was specified multiple times')
 
                 command = subview[alias].get()
-                if isinstance(command, six.text_type):
+                if isinstance(command, str):
                     commands[alias] = self.get_command(alias, command)
                 elif isinstance(command, abc.Mapping):
                     command_text = command.get('command')

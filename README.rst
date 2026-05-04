@@ -57,9 +57,6 @@ cleaning up, but others are useful pretty rarely.
   tags for use by external de-duplication scripts.
 - The ``advisory`` plugin sets ``advisory`` and ``albumadvisory`` flexible
   fields, on import, based on the ``itunesadvisory`` tag in the files.
-- The ``existingqueries`` plugin adds a couple queries that originated in the
-  beets source.
-- The ``hasart`` plugin adds a query to check for embedded album art.
 - The ``inconsistentalbumtracks`` plugin identifies albums whose tracks have
   inconsistent album fields.
 - The ``inlinehook`` plugin lets you define hooks inline in config.yaml with
@@ -71,10 +68,6 @@ cleaning up, but others are useful pretty rarely.
 - The ``nowrite`` plugin blocks writes/moves of items in the library, which is
   particularly useful in testing beets or testing changes to beets without
   mucking up your existing library.
-- The ``otherqueries`` plugin defines other random queries of questionable
-  usefulness at this time.
-- The ``crossquery`` plugin lets you query albums/items whose items/album
-  match a sub-query.
 - The ``spotifyexplicit`` plugin uses the ``spotify`` plugin to look up items
   from my library, determines if Spotify considers these items as explicit
   tracks (Parental Advisory), and prints them if so. I use this to set an

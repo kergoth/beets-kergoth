@@ -31,4 +31,4 @@ Test with singleton
   $ beet last-import
   [^ ]+ [^ ]+ Anar Software LLC - Blank Audio - 250 Milliseconds of Silence (re)
   $ beet ls -f '$last_import'
-  True
+  1

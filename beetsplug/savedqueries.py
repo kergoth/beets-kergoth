@@ -11,6 +11,43 @@ from beets.dbcore import Query, types
 from beets.dbcore.query import OrQuery
 from beets.library import Album, Item, parse_query_string
 from beets.plugins import BeetsPlugin
+from beets.ui import UserError, log
+
+
+class TestQuery(Query):
+    def __new__(self, field_name: str, pattern: str, fast: bool = True):
+        field_name, _, pattern = pattern.rpartition(":")
+        album_query = parse_query_string(f"{field_name}:{pattern}", Item._relation)[0]
+        album_query.table = Item._relation._table
+        log.warning(f"TestQuery: {field_name} = {pattern} -> {album_query}")
+        # return album_query(field_name, pattern, field_name in Item._relation.all_db_fields)
+        return album_query
+
+    # def __init__(self, field_name: str, pattern: str, fast: bool = True):
+    #     self.table = Item._relation._table
+    #     log.warning(f"TestQuery: {field_name} = {pattern}")
+    #     self.field_name, _, pattern = pattern.rpartition(":")
+    #     super().__init__(
+    #         f"{self.table}.{self.field_name}",
+    #         pattern,
+    #         fast=self.field_name in Item._relation.all_db_fields,
+    #     )
+
+    # def match(self, obj: Model) -> bool:
+    #     return obj.album_id is not None and self.value_match(self.pattern, obj._cached_album.get(self.field_name))
+
+    # def col_clause(self):
+    #     super_col_clause = super().col_clause()
+    #     log.warning(
+    #         f"super col_clause: {super_col_clause} for {self.table}.{self.field_name} = {self.pattern}"
+    #     )
+    #     return super_col_clause
+
+    # def clause(self):
+    #     super_clause = super().clause()
+    #     log.warning(f"super clause: {super_clause} for {self.table}.{self.field_name} = {self.pattern}")
+    #     return super_clause
+    # #     return f"{Item._relation.table}.{self.field} = {self.value}"
 
 
 class SavedQuery(Query):

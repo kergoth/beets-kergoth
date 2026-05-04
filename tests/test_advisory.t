@@ -9,6 +9,8 @@
   > directory: .
   > ui:
   >   color: no
+  > import:
+  >   duplicate_action: keep
   > plugins: advisory
   > END
 

@@ -56,7 +56,7 @@ Test command with help text specified
   with help
 
   $ beet help|grep with-help
-    with-help  *get some help (re)
+    with-help  * (re)
 
 Test alias from path
 
